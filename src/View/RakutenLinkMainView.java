@@ -1,8 +1,10 @@
 ﻿package View;
 
 import Controller.RakutenLinkBlockDataSource;
+import Controller.RakutenLinkMainController;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -12,13 +14,14 @@ import javax.swing.*;
 public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdatable{
     // 主Panel
     public JPanel RakutenLinkMainView;
-
-
-
     private RakutenLinkBlockDataSource dataSource;
+    private RakutenLinkMainController controller;
 
-    public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource) {
+    public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkMainController controller) {
         this.dataSource = dataSource;
+        this.controller = controller;
+        button1.addActionListener(new ActionListener() {
+        });
     }
 
     @Override
@@ -50,12 +53,26 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     public void noTimeRemaining() {
         // 通过弹出对话框的方式提醒用户时间到了
         JOptionPane.showMessageDialog(this,"Time is up! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
-        this.reload();
+        controller.reset();
     }
 
     @Override
     public void didSuccess() {
-        JOptionPane.showMessageDialog(this,"You win! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
+        // status: 函数完成 by Archimekai
+        Object[] options = {"Exit game","Play again"};
+        int chosen = JOptionPane.showOptionDialog(this,"You win! ","Info",JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
+        switch (chosen){
+            case 0:
+                controller.shutDown();
+                break;
+            case 1:
+                controller.reset();
+                break;
+            default:
+                break;
+        }
+
     }
 
     @Override
