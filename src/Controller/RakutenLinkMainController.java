@@ -34,7 +34,7 @@ public class RakutenLinkMainController extends AbstractController {
 
     public static void main(String[] args) {
         frame = new JFrame("RakutenLinkMainView");
-        mainViewStatic = new RakutenLinkMainView();
+        mainViewStatic = new RakutenLinkMainView(,this);
         frame.setContentPane(mainViewStatic.RakutenLinkMainView);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
