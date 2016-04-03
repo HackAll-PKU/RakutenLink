@@ -1,2 +1,8 @@
 # Controller的解释
-请把Controller你觉得需要的解释写在这里
+## Controller层内部架构
+- RakutenLinkMainController继承AbstractController
+- AbstractController中定义了MVC架构Controller所要具有的基本能力及持有的View和Model
+- AbstractController具有扩展性,即可多View,多Model
+## Controller层接口
+- RakutenLinkBlockDataSource为连连看的块提供数据源服务
+- RakutenLinkViewDelegate为连连看的View提供代理服务

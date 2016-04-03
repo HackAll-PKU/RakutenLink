@@ -1,12 +1,14 @@
-﻿package View;
+package View;
 
 import Controller.RakutenLinkBlockDataSource;
 import Controller.RakutenLinkMainController;
+import Controller.RakutenLinkViewDelegate;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -15,39 +17,42 @@ import javax.swing.border.EmptyBorder;
 
 public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdatable{
     // 主Panel
-    public JPanel RakutenLinkMainView;
+    private JPanel rakutenLinkMainView;
+    private JFrame rakutenLinkMainFrame;
     private RakutenLinkBlockDataSource dataSource;
-    private RakutenLinkMainController controller;
+    private RakutenLinkViewDelegate delegate;
 
-    public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkMainController controller) {
+    public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkViewDelegate delegate) {
         this.dataSource = dataSource;
-        this.controller = controller;
-        initializeRakutenLinkMainView(); // 初始化主界面
-
+        this.delegate = delegate;
     }
 
     /**
      * 初始化主界面
-     *
-     * @author 刘证源
      */
-    private void initializeRakutenLinkMainView(){
-        RakutenLinkMainView.setBorder(new EmptyBorder(10, 20, 10, 20));
-        RakutenLinkMainView.setLayout(new BorderLayout(0, 0));
+    public void initializeRakutenLinkMainView(){
+        rakutenLinkMainView = new JPanel();
+
+        rakutenLinkMainView.setBorder(new EmptyBorder(10, 20, 10, 20));
+        rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
 
         JPanel gridPanel = new JPanel();  //centerµÄ¿éÃæ°å
         gridPanel.setLayout(new GridLayout(10,20));
-        RakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
+        rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
 
-        JButton[] buttons=new JButton[200];  //Á¬Á¬¿´µÄ¿é
-        for( int i=0; i<buttons.length; i++)
-            buttons[i]=new JButton(""+(i+1));
-        for(int i=0;i<buttons.length;i++)
-            gridPanel.add(buttons[i]);
+        RakutenLinkBlock[] buttons=new RakutenLinkBlock[200];  //Á¬Á¬¿´µÄ¿é
+        for( int i=0; i<buttons.length; i++) {
+            buttons[i] = new RakutenLinkBlock(i / dataSource.columnNumber(), i % dataSource.columnNumber(), String.valueOf(i + 1));
+            buttons[i].addActionListener(e -> {
+                RakutenLinkBlock source = (RakutenLinkBlock) e.getSource();
+                delegate.DidClickBlockAtRowAndColumn(source.row, source.column);
+            });
+        }
+        for (RakutenLinkBlock button : buttons) gridPanel.add(button);
 
         JPanel buttonPanel = new JPanel();  //µ×²¿µÄ°´Å¥Ãæ°å
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,30,10));
-        RakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
+        rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
 
         JButton buttonNew = new JButton("New Game");  //ÐÂÓÎÏ·°´Å¥
         JButton buttonRestart = new JButton("Restart Game");  //ÖØÐÂ¿ªÊ¼ÓÎÏ·°´Å¥
@@ -63,7 +68,14 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         timeline.setText("Time Remain: 60s");
         timeline.setBackground(Color.black);
         timelinePanel.add(timeline);
-        RakutenLinkMainView.add(timelinePanel,BorderLayout.NORTH);
+        rakutenLinkMainView.add(timelinePanel,BorderLayout.NORTH);
+
+        rakutenLinkMainFrame = new JFrame();
+        rakutenLinkMainFrame.setContentPane(this.rakutenLinkMainView);
+        rakutenLinkMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        rakutenLinkMainFrame.setPreferredSize(new Dimension(800, 600));
+        rakutenLinkMainFrame.pack();
+        rakutenLinkMainFrame.setVisible(true);
     }
 
     @Override
@@ -89,32 +101,32 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     @Override
     public void noValidFutureActions() {
         // 将会提示用户不可以进行更多操作，并且强制重置游戏。
-        // @author: archimekai
-        JOptionPane.showMessageDialog(this, "There are no more blocks that you can link.","Info",
+        // @author: archimekai, Zac Chan
+        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame, "There are no more blocks that you can link.","Info",
                 JOptionPane.INFORMATION_MESSAGE);
 
-        controller.reset();
+        delegate.reset();
     }
 
     @Override
     public void noTimeRemaining() {
         // 通过弹出对话框的方式提醒用户时间到了
-        JOptionPane.showMessageDialog(this,"Time is up! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
-        controller.reset();
+        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame,"Time is up! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
+        delegate.reset();
     }
 
     @Override
     public void didSuccess() {
         // status: 函数完成 by Archimekai
         Object[] options = {"Exit game","Play again"};
-        int chosen = JOptionPane.showOptionDialog(this,"You win! ","Info",JOptionPane.DEFAULT_OPTION,
+        int chosen = JOptionPane.showOptionDialog(this.rakutenLinkMainFrame,"You win! ","Info",JOptionPane.DEFAULT_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
         switch (chosen){
             case 0:
-                controller.shutDown();
+                delegate.shutDown();
                 break;
             case 1:
-                controller.reset();
+                delegate.reset();
                 break;
             default:
                 break;

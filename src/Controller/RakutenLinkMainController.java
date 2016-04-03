@@ -4,7 +4,6 @@ import Model.AbstractModel;
 import Model.RakutenLinkMainModel;
 import View.AbstractViewPanel;
 import View.RakutenLinkMainView;
-import org.w3c.dom.views.AbstractView;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -14,10 +13,14 @@ import java.lang.reflect.Method;
  * Created by ChenLetian on 4/1/16.
  * RakutenLink的主Controller类
  */
-public class RakutenLinkMainController extends AbstractController {
+public class RakutenLinkMainController extends AbstractController implements RakutenLinkViewDelegate, RakutenLinkBlockDataSource {
+
+    private RakutenLinkMainView mainView;
 
     public RakutenLinkMainController() {
-        addView(mainViewStatic);
+        mainView = new RakutenLinkMainView(this, this);
+        mainView.initializeRakutenLinkMainView();
+        addView(mainView);
         addModel(new RakutenLinkMainModel());
     }
 
@@ -28,30 +31,11 @@ public class RakutenLinkMainController extends AbstractController {
 
     }
 
-    // Below is the setup of the application
-    private static JFrame frame;
-    private static RakutenLinkMainView mainViewStatic;
-
-    public static void main(String[] args) {
-        frame = new JFrame("RakutenLinkMainView");
-        mainViewStatic = new RakutenLinkMainView(,this);
-        frame.setContentPane(mainViewStatic.RakutenLinkMainView);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    /**
-     * 退出程序时调用。
-     */
     public void shutDown(){
         // 以下为样例代码,仅仅体现了退出的逻辑 by Archimekai
         System.exit(0);
     }
 
-    /**
-     * 重置整个游戏，需要先重置model，再重置view
-     */
     public void reset(){
         // 以下为样例代码,仅仅体现了重置的逻辑 by Archimekai
         for (AbstractModel model: registeredModels
@@ -63,18 +47,35 @@ public class RakutenLinkMainController extends AbstractController {
             }catch (Exception ex){
                 // 什么也不做
             }
-
         }
-
         for (AbstractViewPanel viewPanel: registeredViews){
             try {
                 Method method = viewPanel.getClass().getMethod("reset");
                 method.invoke(viewPanel);
             } catch (Exception ex){
-
+                // 什么也不做
             }
         }
 
     }
 
+    @Override
+    public void DidClickBlockAtRowAndColumn(int row, int column) {
+        // TODO: let model know
+    }
+
+    @Override
+    public ImageIcon typeForBlockAtRowAndColumn(int row, int column) {
+        return null;
+    }
+
+    @Override
+    public int rowNumber() {
+        return 0;
+    }
+
+    @Override
+    public int columnNumber() {
+        return 0;
+    }
 }
