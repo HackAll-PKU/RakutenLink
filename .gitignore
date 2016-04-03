@@ -48,5 +48,6 @@ crashlytics-build.properties
 fabric.properties
 
 ### Intellij Patch ###
-*.iml
 
+
+MVC架构.pdf
