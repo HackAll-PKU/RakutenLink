@@ -21,6 +21,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     private JFrame rakutenLinkMainFrame;
     private RakutenLinkBlockDataSource dataSource;
     private RakutenLinkViewDelegate delegate;
+    private RakutenLinkBlock[][] buttons;
 
     public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkViewDelegate delegate) {
         this.dataSource = dataSource;
@@ -40,15 +41,19 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         gridPanel.setLayout(new GridLayout(10,20));
         rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
 
-        RakutenLinkBlock[] buttons=new RakutenLinkBlock[200];  //Á¬Á¬¿´µÄ¿é
-        for( int i=0; i<buttons.length; i++) {
-            buttons[i] = new RakutenLinkBlock(i / dataSource.columnNumber(), i % dataSource.columnNumber(), String.valueOf(i + 1));
-            buttons[i].addActionListener(e -> {
+        buttons = new RakutenLinkBlock[dataSource.rowNumber()][dataSource.columnNumber()];
+        for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
+            int row = i / dataSource.columnNumber();
+            int column = i % dataSource.columnNumber();
+            buttons[row][column] = new RakutenLinkBlock(i / dataSource.columnNumber(), i % dataSource.columnNumber(), String.valueOf(i + 1));
+            buttons[row][column].addActionListener(e -> {
                 RakutenLinkBlock source = (RakutenLinkBlock) e.getSource();
                 delegate.DidClickBlockAtRowAndColumn(source.row, source.column);
             });
         }
-        for (RakutenLinkBlock button : buttons) gridPanel.add(button);
+        for (RakutenLinkBlock[] buttonRow : buttons)
+            for (RakutenLinkBlock button: buttonRow)
+                gridPanel.add(button);
 
         JPanel buttonPanel = new JPanel();  //µ×²¿µÄ°´Å¥Ãæ°å
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,30,10));
@@ -70,7 +75,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         timelinePanel.add(timeline);
         rakutenLinkMainView.add(timelinePanel,BorderLayout.NORTH);
 
-        rakutenLinkMainFrame = new JFrame();
+        rakutenLinkMainFrame = new JFrame("乐天连连看");
         rakutenLinkMainFrame.setContentPane(this.rakutenLinkMainView);
         rakutenLinkMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         rakutenLinkMainFrame.setPreferredSize(new Dimension(800, 600));

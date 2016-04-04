@@ -71,11 +71,11 @@ public class RakutenLinkMainController extends AbstractController implements Rak
 
     @Override
     public int rowNumber() {
-        return 0;
+        return 10;
     }
 
     @Override
     public int columnNumber() {
-        return 0;
+        return 20;
     }
 }
