@@ -37,7 +37,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainView.setBorder(new EmptyBorder(10, 20, 10, 20));
         rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
 
-        JPanel gridPanel = new JPanel();  //centerµÄ¿éÃæ°å
+        JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(10,20));
         rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
 
@@ -55,18 +55,16 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             for (RakutenLinkBlock button: buttonRow)
                 gridPanel.add(button);
 
-        JPanel buttonPanel = new JPanel();  //µ×²¿µÄ°´Å¥Ãæ°å
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,30,10));
         rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
 
-        JButton buttonNew = new JButton("New Game");  //ÐÂÓÎÏ·°´Å¥
-        JButton buttonRestart = new JButton("Restart Game");  //ÖØÐÂ¿ªÊ¼ÓÎÏ·°´Å¥
-        //JButton buttonPause = new JButton("Pause");  //ÔÝÍ£°´Å¥
+        JButton buttonNew = new JButton("New Game");
+        JButton buttonRestart = new JButton("Restart Game");
         buttonPanel.add(buttonNew);
         buttonPanel.add(buttonRestart);
-        //buttonPanel.add(buttonPause);
 
-        JPanel timelinePanel= new JPanel();  //¶¥²¿µÄÊ±¼äÖáÃæ°å
+        JPanel timelinePanel= new JPanel();
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         JLabel timeline=new JLabel();
         timeline.setSize(100, 100);
