@@ -1,7 +1,5 @@
 package Controller;
 
-import javax.swing.*;
-
 /**
  * Created by ChenLetian on 4/2/16.
  * 消消乐的方块的数据源代理
@@ -14,7 +12,7 @@ public interface RakutenLinkBlockDataSource {
      * @param column 列
      * @return 指定行列的图片,如果那个方块已经被消掉则为null
      */
-    ImageIcon typeForBlockAtRowAndColumn(int row, int column);
+    int typeForBlockAtRowAndColumn(int row, int column);
 
     /**
      * 获取棋盘有几行

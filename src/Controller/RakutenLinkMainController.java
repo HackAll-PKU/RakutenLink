@@ -1,13 +1,9 @@
 package Controller;
 
-import Model.AbstractModel;
-import Model.RakutenLinkMainModel;
-import View.AbstractViewPanel;
+import Model.RakutenLinkModel;
 import View.RakutenLinkMainView;
 
-import javax.swing.*;
 import java.beans.PropertyChangeEvent;
-import java.lang.reflect.Method;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -16,12 +12,19 @@ import java.lang.reflect.Method;
 public class RakutenLinkMainController extends AbstractController implements RakutenLinkViewDelegate, RakutenLinkBlockDataSource {
 
     private RakutenLinkMainView mainView;
+    private RakutenLinkModel mainModel;
+
+    final int blockTypes = 20;
+    final int rowNumber = 10;
+    final int columnNumber = 20;
 
     public RakutenLinkMainController() {
+        mainModel = new RakutenLinkModel(rowNumber, columnNumber);
+        mainModel.reset(blockTypes);
+        addModel(mainModel);
         mainView = new RakutenLinkMainView(this, this);
         mainView.initializeRakutenLinkMainView();
         addView(mainView);
-        addModel(new RakutenLinkMainModel());
     }
 
     @Override
@@ -36,46 +39,36 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         System.exit(0);
     }
 
+    @Override
     public void reset(){
-        // 以下为样例代码,仅仅体现了重置的逻辑 by Archimekai
-        for (AbstractModel model: registeredModels
-             ) {
-            try{
-                // 使用反射获取model中的reset方法
-                Method method = model.getClass().getMethod("reset");
-                method.invoke(model);
-            }catch (Exception ex){
-                // 什么也不做
-            }
-        }
-        for (AbstractViewPanel viewPanel: registeredViews){
-            try {
-                Method method = viewPanel.getClass().getMethod("reset");
-                method.invoke(viewPanel);
-            } catch (Exception ex){
-                // 什么也不做
-            }
-        }
+        mainModel.shuffle();
+        mainView.reset();
+    }
 
+    @Override
+    public void restartGame() {
+        mainModel.reset(blockTypes);
+        mainView.reset();
     }
 
     @Override
     public void DidClickBlockAtRowAndColumn(int row, int column) {
+        System.out.printf("row=%d, column=%d has been selected\n", row, column);
         // TODO: let model know
     }
 
     @Override
-    public ImageIcon typeForBlockAtRowAndColumn(int row, int column) {
-        return null;
+    public int typeForBlockAtRowAndColumn(int row, int column) {
+        return mainModel.getTypeOfRowAndColumn(row, column);
     }
 
     @Override
     public int rowNumber() {
-        return 10;
+        return mainModel.getRowNumber();
     }
 
     @Override
     public int columnNumber() {
-        return 20;
+        return mainModel.getColumnNumber();
     }
 }

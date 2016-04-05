@@ -45,7 +45,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
-            buttons[row][column] = new RakutenLinkBlock(i / dataSource.columnNumber(), i % dataSource.columnNumber(), String.valueOf(i + 1));
+            buttons[row][column] = new RakutenLinkBlock(row, column, String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
             buttons[row][column].addActionListener(e -> {
                 RakutenLinkBlock source = (RakutenLinkBlock) e.getSource();
                 delegate.DidClickBlockAtRowAndColumn(source.row, source.column);
@@ -60,9 +60,15 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
 
         JButton buttonNew = new JButton("New Game");
-        JButton buttonRestart = new JButton("Restart Game");
+        JButton buttonShuffle = new JButton("重排");
         buttonPanel.add(buttonNew);
-        buttonPanel.add(buttonRestart);
+        buttonPanel.add(buttonShuffle);
+        buttonNew.addActionListener(e -> {
+            delegate.restartGame();
+        });
+        buttonShuffle.addActionListener(e -> {
+            delegate.reset();
+        });
 
         JPanel timelinePanel= new JPanel();
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -156,6 +162,10 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
      * 如果需要让游戏初始化，则需要controller先调用model的reset接口，model中的数据初始化后，再调用view 的reset（）函数把重置好的数据加载进来。
      */
     private void reload(){
-
+        for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
+            int row = i / dataSource.columnNumber();
+            int column = i % dataSource.columnNumber();
+            buttons[row][column].setText(String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
+        }
     }
 }

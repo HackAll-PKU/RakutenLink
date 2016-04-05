@@ -5,26 +5,51 @@ package Model;
  */
 public class RakutenLinkModel extends AbstractModel {
 
-    static final int sizeX=5;
-    static final int sizeY=10;
+    final int sizeRow;
+    final int sizeColumn;
     private int tokenCnt;
 
     private int[][] Matrix;//储存棋盘状态信息，-1=null
+
+    public RakutenLinkModel(int sizeRow, int sizeColumn) {
+        this.sizeRow = sizeRow;
+        this.sizeColumn = sizeColumn;
+    }
+
+    /**
+     * 获取行数
+     * @return 行数
+     */
+    public int getRowNumber() {
+        return sizeRow;
+    }
+
+    /**
+     * 获取列数
+     * @return 列数
+     */
+    public int getColumnNumber() {
+        return sizeColumn;
+    }
+
+    public int getTypeOfRowAndColumn(int row, int column) {
+        return Matrix[row][column];
+    }
 
     /**
      * 初始化棋盘
      * @param tc 有哪几种块
      */
-    void initMatrix(int tc){
+    public void reset(int tc){
         //初始化棋盘，成对储存棋盘，棋盘为满。
         tokenCnt = tc;
-        Matrix = new int[sizeX][sizeY];
-        for(int i=0;i<sizeX;++i)for(int j=0;j<sizeY;j+=2){
+        Matrix = new int[sizeRow][sizeColumn];
+        for(int i = 0; i< sizeRow; ++i)for(int j = 0; j< sizeColumn; j+=2){
             Matrix[i][j]=(int)(Math.random()*tokenCnt);
             Matrix[i][j+1]=Matrix[i][j];
         }
         do{
-            Reset();
+            shuffle();
         }while(Dead());
     }
 
@@ -41,7 +66,7 @@ public class RakutenLinkModel extends AbstractModel {
      * @return 是否游戏胜利
      */
     boolean win(){
-        for(int i=0;i<sizeX;++i)for(int j=0;j<sizeY;++j)if(Matrix[i][j]!=-1)return false;
+        for(int i = 0; i< sizeRow; ++i)for(int j = 0; j< sizeColumn; ++j)if(Matrix[i][j]!=-1)return false;
         return true;
     }
 
@@ -59,7 +84,7 @@ public class RakutenLinkModel extends AbstractModel {
             //TODO: 广播“游戏胜利”
         }
         if (Dead()){
-            Reset();
+            shuffle();
             //TODO: 广播“死局”,并让controller通知view更新棋盘。
         }
     }
@@ -70,12 +95,12 @@ public class RakutenLinkModel extends AbstractModel {
     }
 
     /**
-     * 重置棋盘
+     * 重排棋盘
      */
-    void Reset(){
+    public void shuffle(){
         for (int i=1;i<=50;i++){
-            int x1=randInt(sizeX); int y1=randInt(sizeY);
-            int x2=randInt(sizeX); int y2=randInt(sizeY);
+            int x1=randInt(sizeRow); int y1=randInt(sizeColumn);
+            int x2=randInt(sizeRow); int y2=randInt(sizeColumn);
             int tmp=Matrix[x1][y1];
             Matrix[x1][y1]=Matrix[x2][y2];
             Matrix[x2][y2]=tmp;
@@ -85,9 +110,9 @@ public class RakutenLinkModel extends AbstractModel {
     private int[] getRow(int x1,int x2,int y1,int y2){
         int i1=y1-1,j1=y1+1,i2=y2-1,j2=y2+1;
         while(i1>=0 && Matrix[x1][i1-1]==-1)i1--;
-        while(j1<sizeY && Matrix[x2][j1+1]==-1)j1++;
+        while(j1< sizeColumn && Matrix[x2][j1+1]==-1)j1++;
         while(i2>=0 && Matrix[x2][i2-1]==-1)i2--;
-        while(j2<sizeY && Matrix[x2][j2+1]==-1)j2++;
+        while(j2< sizeColumn && Matrix[x2][j2+1]==-1)j2++;
         if(j1<=i2){
             if(i1>j2)return new int[]{};
             if(j1>j2)return new int[]{i1,j2};
@@ -100,9 +125,9 @@ public class RakutenLinkModel extends AbstractModel {
     private int[] getCol(int x1,int x2,int y1,int y2){
         int i1=x1,j1=x1,i2=x2,j2=x2;
         while(i1>=0 && Matrix[i1-1][y1]==-1)i1--;
-        while(j1<sizeX && Matrix[j1+1][y1]==-1)j1++;
+        while(j1< sizeRow && Matrix[j1+1][y1]==-1)j1++;
         while(i2>=0 && Matrix[i2-1][y2]==-1)i2--;
-        while(j2<sizeX && Matrix[j2+1][y2]==-1)j2++;
+        while(j2< sizeRow && Matrix[j2+1][y2]==-1)j2++;
         if(j1<=i2){
             if(i1>j2)return new int[]{};
             if(j1>j2)return new int[]{i1,j2};
@@ -148,8 +173,8 @@ public class RakutenLinkModel extends AbstractModel {
     }
     // for debug
     private void Print(){
-        for(int i=0;i<sizeX;i++){
-            for(int j=0;j<sizeY;j++) System.out.printf("%d ",Matrix[i][j]);
+        for(int i = 0; i< sizeRow; i++){
+            for(int j = 0; j< sizeColumn; j++) System.out.printf("%d ",Matrix[i][j]);
             System.out.println();
         }
     }

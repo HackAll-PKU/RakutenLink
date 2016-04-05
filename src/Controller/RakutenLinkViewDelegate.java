@@ -17,6 +17,11 @@ public interface RakutenLinkViewDelegate {
     void reset();
 
     /**
+     * 重新开始游戏，需要先重置model，再重置view
+     */
+    void restartGame();
+
+    /**
      * 某行某列的方块被点击了
      * @param row 行
      * @param column 列
