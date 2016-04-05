@@ -1,5 +1,9 @@
 package Model;
 
+import Controller.RakutenLinkMainController;
+
+import static Controller.RakutenLinkMainController.*;
+
 /**
  * Created by ChenLetian on 4/5/16.
  */
@@ -77,18 +81,17 @@ public class RakutenLinkModel extends AbstractModel {
      * @param x2 第二个方块的行
      * @param y2 第二个方块的列
      */
-    void setMatrix(int x1,int y1,int x2,int y2){
+    public void clearTwoBlocks(int x1, int y1, int x2, int y2){
         Matrix[x1][y1]=-1;
         Matrix[x2][y2]=-1;
         if (win()){
-            //TODO: 广播“游戏胜利”
+            firePropertyChange(RakutenLinkMainController.GameHasWinned, false, true);
         }
         if (Dead()){
             shuffle();
-            //TODO: 广播“死局”,并让controller通知view更新棋盘。
+            firePropertyChange(RakutenLinkMainController.GameHasNoBlocksToClear, false, true);
         }
     }
-
 
     private int randInt(int max){
         return (int)(Math.random()*max);
@@ -110,9 +113,9 @@ public class RakutenLinkModel extends AbstractModel {
     private int[] getRow(int x1,int x2,int y1,int y2){
         int i1=y1-1,j1=y1+1,i2=y2-1,j2=y2+1;
         while(i1>=0 && Matrix[x1][i1-1]==-1)i1--;
-        while(j1< sizeColumn && Matrix[x2][j1+1]==-1)j1++;
+        while(j1< sizeColumn - 1 && Matrix[x2][j1+1]==-1)j1++;
         while(i2>=0 && Matrix[x2][i2-1]==-1)i2--;
-        while(j2< sizeColumn && Matrix[x2][j2+1]==-1)j2++;
+        while(j2< sizeColumn - 1 && Matrix[x2][j2+1]==-1)j2++;
         if(j1<=i2){
             if(i1>j2)return new int[]{};
             if(j1>j2)return new int[]{i1,j2};
@@ -125,9 +128,9 @@ public class RakutenLinkModel extends AbstractModel {
     private int[] getCol(int x1,int x2,int y1,int y2){
         int i1=x1,j1=x1,i2=x2,j2=x2;
         while(i1>=0 && Matrix[i1-1][y1]==-1)i1--;
-        while(j1< sizeRow && Matrix[j1+1][y1]==-1)j1++;
+        while(j1< sizeRow - 1 && Matrix[j1+1][y1]==-1)j1++;
         while(i2>=0 && Matrix[i2-1][y2]==-1)i2--;
-        while(j2< sizeRow && Matrix[j2+1][y2]==-1)j2++;
+        while(j2< sizeRow - 1 && Matrix[j2+1][y2]==-1)j2++;
         if(j1<=i2){
             if(i1>j2)return new int[]{};
             if(j1>j2)return new int[]{i1,j2};
@@ -155,7 +158,7 @@ public class RakutenLinkModel extends AbstractModel {
      * @param y2 第二个方块的列
      * @return 是否可消除
      */
-    boolean Removeable(int x1,int y1,int x2,int y2){//判断是否可消除
+    public boolean Removeable(int x1,int y1,int x2,int y2){//判断是否可消除
         if (Matrix[x1][y1]==Matrix[x2][y2]){
             int[] row=getRow(x1,x2,y1,y2);
             if(row.length>0){
@@ -183,7 +186,7 @@ public class RakutenLinkModel extends AbstractModel {
      *
      */
     void timing(){
-        //TODO: 维护时间，若时间到则广播“游戏时间结束”
+        firePropertyChange(RakutenLinkMainController.GameTimesUp, false ,true);
     }
 
 }
