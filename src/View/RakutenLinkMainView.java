@@ -88,17 +88,20 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
     @Override
     public void makeBlockUnselected(int rowBlock, int columnBlock) {
-
+        // 通过让panel获得焦点的方式让已经被选择的块失去焦点
+        this.rakutenLinkMainView.requestFocus();
     }
 
     @Override
     public void didClearTwoBlocksSuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
-
+        // 现在还没有加入消去的动画和连线
+        buttons[rowBlock1][columnBlock1].setVisible(false);
+        buttons[rowBlock2][columnBlock2].setVisible(false);
     }
 
     @Override
     public void didClearTwoBlocksUnsuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
-
+        this.rakutenLinkMainView.requestFocus();
     }
 
     @Override
