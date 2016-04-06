@@ -50,6 +50,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
                 RakutenLinkBlock source = (RakutenLinkBlock) e.getSource();
                 delegate.DidClickBlockAtRowAndColumn(source.row, source.column);
             });
+            if(dataSource.typeForBlockAtRowAndColumn(row, column)==-1)buttons[row][column].setVisible(false);
         }
         for (RakutenLinkBlock[] buttonRow : buttons)
             for (RakutenLinkBlock button: buttonRow)
@@ -85,6 +86,8 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainFrame.setPreferredSize(new Dimension(800, 600));
         rakutenLinkMainFrame.pack();
         rakutenLinkMainFrame.setVisible(true);
+        this.rakutenLinkMainView.requestFocus();
+
     }
 
     @Override
@@ -167,7 +170,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
             buttons[row][column].setText(String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
-
+            buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
         }
     }
 }
