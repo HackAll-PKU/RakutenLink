@@ -76,7 +76,16 @@ public class RakutenLinkModel extends AbstractModel {
      * @return 是否为死局
      */
     private boolean Dead() {
-        return false;
+        for(int x1=0;x1<sizeRow;++x1)
+            for(int y1=0;y1<sizeColumn;++y1)
+                if (Matrix[x1][y1]!=-1){
+                for (int x2=0;x2<sizeRow;++x2)
+                    for(int y2=0;y2<sizeColumn;++y2){
+                        if(matrix[x2][y2]!=-1)||(x1!=x2 && y1!=y2){
+                            if (Removeable(x1,y1,x2,y2)()){return false;}
+                        }
+                    }}
+        return true;
     }
 
     /**
