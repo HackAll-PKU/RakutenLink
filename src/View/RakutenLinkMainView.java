@@ -111,7 +111,8 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
     @Override
     public void didClearTwoBlocksUnsuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
-        this.rakutenLinkMainView.requestFocus();
+        buttons[rowBlock2][columnBlock2].requestFocus();
+        //this.rakutenLinkMainView.requestFocus();
     }
 
     @Override

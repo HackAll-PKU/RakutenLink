@@ -88,11 +88,14 @@ public class RakutenLinkMainController extends AbstractController implements Rak
             if (mainModel.Removeable(hasSelectedRow, hasSelectedColumn, row, column)) {
                 mainModel.clearTwoBlocks(hasSelectedRow, hasSelectedColumn, row, column);
                 mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
+                resetSelectStatus();
             }
             else {
                 mainView.didClearTwoBlocksUnsuccessful(hasSelectedRow, hasSelectedColumn, row, column);
+                hasSelectedCount=1;
+                hasSelectedRow = row;
+                hasSelectedColumn = column;
             }
-            resetSelectStatus();
         }
     }
 
