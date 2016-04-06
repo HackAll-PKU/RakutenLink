@@ -14,7 +14,7 @@ public interface RakutenLinkViewDelegate {
     /**
      * 重置整个游戏，需要先重置model，再重置view
      */
-    void reset();
+    void shuffle();
 
     /**
      * 重新开始游戏，需要先重置model，再重置view

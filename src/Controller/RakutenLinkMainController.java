@@ -4,6 +4,7 @@ import Model.RakutenLinkModel;
 import View.RakutenLinkMainView;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -41,15 +42,15 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         super.propertyChange(evt);
-        if (evt.getPropertyName() == GameHasWinned) {
+        if (Objects.equals(evt.getPropertyName(), GameHasWinned)) {
             mainView.didSuccess();
         }
         else
-        if (evt.getPropertyName() == GameHasNoBlocksToClear) {
+        if (Objects.equals(evt.getPropertyName(), GameHasNoBlocksToClear)) {
             mainView.reset();
         }
         else
-        if (evt.getPropertyName() == GameTimesUp) {
+        if (Objects.equals(evt.getPropertyName(), GameTimesUp)) {
             mainView.noTimeRemaining();
         }
     }
@@ -60,7 +61,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     }
 
     @Override
-    public void reset(){
+    public void shuffle(){
         mainModel.shuffle();
         mainView.reset();
         resetSelectStatus();
@@ -93,12 +94,14 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         else {
             if (mainModel.Removable(hasSelectedRow, hasSelectedColumn, row, column)) {
                 mainModel.clearTwoBlocks(hasSelectedRow, hasSelectedColumn, row, column);
-                mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
+                if ((hasSelectedRow != -1)) {
+                    mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
+                }
                 resetSelectStatus();
             }
             else {
                 mainView.didClearTwoBlocksUnsuccessful(hasSelectedRow, hasSelectedColumn, row, column);
-                hasSelectedCount=1;
+                hasSelectedCount = 1;
                 hasSelectedRow = row;
                 hasSelectedColumn = column;
             }

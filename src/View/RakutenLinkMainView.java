@@ -1,14 +1,11 @@
 package View;
 
 import Controller.RakutenLinkBlockDataSource;
-import Controller.RakutenLinkMainController;
 import Controller.RakutenLinkViewDelegate;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -69,7 +66,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             this.rakutenLinkMainView.requestFocus();
         });
         buttonShuffle.addActionListener(e -> {
-            delegate.reset();
+            delegate.shuffle();
             this.rakutenLinkMainView.requestFocus();
         });
 
@@ -123,14 +120,14 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         JOptionPane.showMessageDialog(this.rakutenLinkMainFrame, "There are no more blocks that you can link. So we will shuffle","Info",
                 JOptionPane.INFORMATION_MESSAGE);
 
-        delegate.reset();
+        delegate.shuffle();
     }
 
     @Override
     public void noTimeRemaining() {
         // 通过弹出对话框的方式提醒用户时间到了
         JOptionPane.showMessageDialog(this.rakutenLinkMainFrame,"Time is up! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
-        delegate.reset();
+        delegate.shuffle();
     }
 
     @Override
@@ -144,7 +141,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
                 delegate.shutDown();
                 break;
             case 1:
-                delegate.reset();
+                delegate.restartGame();
                 break;
             default:
                 break;
