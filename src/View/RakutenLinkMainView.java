@@ -31,14 +31,14 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     /**
      * 初始化主界面
      */
-    public void initializeRakutenLinkMainView(){
+    public void initializeRakutenLinkMainView(int rowNumber, int columnNumber){
         rakutenLinkMainView = new JPanel();
 
         rakutenLinkMainView.setBorder(new EmptyBorder(10, 20, 10, 20));
         rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
 
         JPanel gridPanel = new JPanel();
-        gridPanel.setLayout(new GridLayout(10,20));
+        gridPanel.setLayout(new GridLayout(rowNumber, columnNumber));
         rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
 
         buttons = new RakutenLinkBlock[dataSource.rowNumber()][dataSource.columnNumber()];

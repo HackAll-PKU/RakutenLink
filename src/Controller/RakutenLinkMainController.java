@@ -27,7 +27,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         mainModel.reset(blockTypes);
         addModel(mainModel);
         mainView = new RakutenLinkMainView(this, this);
-        mainView.initializeRakutenLinkMainView();
+        mainView.initializeRakutenLinkMainView(rowNumber, columnNumber);
         addView(mainView);
         resetSelectStatus();
     }
