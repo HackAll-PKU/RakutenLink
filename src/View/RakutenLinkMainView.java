@@ -114,14 +114,13 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     @Override
     public void didClearTwoBlocksUnsuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
         buttons[rowBlock2][columnBlock2].requestFocus();
-        //this.rakutenLinkMainView.requestFocus();
     }
 
     @Override
     public void noValidFutureActions() {
         // 将会提示用户不可以进行更多操作，并且强制重置游戏。
         // @author: archimekai, Zac Chan
-        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame, "There are no more blocks that you can link.","Info",
+        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame, "There are no more blocks that you can link. So we will shuffle","Info",
                 JOptionPane.INFORMATION_MESSAGE);
 
         delegate.reset();
@@ -165,7 +164,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
 
     /**
-     * 从dataSource里面取得所有的label数据和状态并显示到view中。<br>
+     * 从dataSource里面取得所有的label数据和状态并显示到view中
      * 如果需要让游戏初始化，则需要controller先调用model的reset接口，model中的数据初始化后，再调用view 的reset（）函数把重置好的数据加载进来。
      */
     private void reload(){
