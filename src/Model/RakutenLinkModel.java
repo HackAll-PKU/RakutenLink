@@ -81,8 +81,8 @@ public class RakutenLinkModel extends AbstractModel {
                 if (Matrix[x1][y1]!=-1){
                 for (int x2=0;x2<sizeRow;++x2)
                     for(int y2=0;y2<sizeColumn;++y2){
-                        if(matrix[x2][y2]!=-1)||(x1!=x2 && y1!=y2){
-                            if (Removeable(x1,y1,x2,y2)()){return false;}
+                        if((Matrix[x2][y2]!=-1)||(x1!=x2 && y1!=y2)){
+                            if (Removeable(x1,y1,x2,y2)){return false;}
                         }
                     }}
         return true;
@@ -135,7 +135,7 @@ public class RakutenLinkModel extends AbstractModel {
                 if (Matrix[i][j] != -1) Matrix[i][j] = blockList.get(index++);
             }
         }
-        while (dead()){shuffle();};
+        while (Dead()){shuffle();};
     }
 
     private int[] getRow(int x1, int x2, int y1, int y2) {
