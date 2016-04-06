@@ -103,6 +103,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         // 现在还没有加入消去的动画和连线
         buttons[rowBlock1][columnBlock1].setVisible(false);
         buttons[rowBlock2][columnBlock2].setVisible(false);
+        this.rakutenLinkMainView.requestFocus();
     }
 
     @Override
@@ -166,6 +167,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
             buttons[row][column].setText(String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
+
         }
     }
 }

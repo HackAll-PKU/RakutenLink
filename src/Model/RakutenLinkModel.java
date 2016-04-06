@@ -206,7 +206,7 @@ public class RakutenLinkModel extends AbstractModel {
      * @return 是否可消除
      */
     public boolean Removeable(int x1, int y1, int x2, int y2) {//判断是否可消除
-        if (Matrix[x1][y1] == Matrix[x2][y2]) {
+        if (!(x1==x2 && y1==y2)&&Matrix[x1][y1] == Matrix[x2][y2]) {
             int[] row = getRow(x1, x2, y1, y2);
             if (row.length > 0) {
                 //System.out.printf("%d,%d\n", row[0], row[1]);
