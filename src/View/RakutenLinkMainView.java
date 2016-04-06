@@ -42,12 +42,12 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
-            buttons[row][column] = new RakutenLinkBlock(row, column, String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
+            buttons[row][column] = new RakutenLinkBlock(row, column);
+            buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column) != -1);
             buttons[row][column].addActionListener(e -> {
                 RakutenLinkBlock source = (RakutenLinkBlock) e.getSource();
                 delegate.DidClickBlockAtRowAndColumn(source.row, source.column);
             });
-            if(dataSource.typeForBlockAtRowAndColumn(row, column)==-1)buttons[row][column].setVisible(false);
         }
         for (RakutenLinkBlock[] buttonRow : buttons)
             for (RakutenLinkBlock button: buttonRow)
@@ -87,6 +87,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainFrame.setVisible(true);
         this.rakutenLinkMainView.requestFocus();
 
+        reload();
     }
 
     @Override
@@ -168,13 +169,26 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
-            buttons[row][column].setText(String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
+            buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
             buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
         }
     }
 
     private void reloadAtRowAndColumn(int row, int column) {
-        buttons[row][column].setText(String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)));
+        buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
         buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
+    }
+
+    private ImageIcon getIconAtRowAndColumn(int row, int column) {
+        if (dataSource.typeForBlockAtRowAndColumn(row, column) == -1) {
+            return null;
+        }
+        else {
+            ImageIcon icon = new ImageIcon("resource/" + String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)) + ".png");
+            Image image = icon.getImage();
+            Image scaledImage = image.getScaledInstance(buttons[row][column].getWidth(), buttons[row][column].getHeight(), Image.SCALE_SMOOTH);
+            ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
+            return scaledImageIcon;
+        }
     }
 }

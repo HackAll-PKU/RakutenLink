@@ -17,4 +17,15 @@ public class RakutenLinkBlock extends JButton {
         this.row = row;
         this.column = column;
     }
+
+    public RakutenLinkBlock(Icon icon, int row, int column) {
+        super(icon);
+        this.row = row;
+        this.column = column;
+    }
+
+    public RakutenLinkBlock(int row, int column) {
+        this.row = row;
+        this.column = column;
+    }
 }
