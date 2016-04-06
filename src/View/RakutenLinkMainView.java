@@ -61,14 +61,16 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
 
         JButton buttonNew = new JButton("New Game");
-        JButton buttonShuffle = new JButton("重排");
+        JButton buttonShuffle = new JButton("Shuffle");
         buttonPanel.add(buttonNew);
         buttonPanel.add(buttonShuffle);
         buttonNew.addActionListener(e -> {
             delegate.restartGame();
+            this.rakutenLinkMainView.requestFocus();
         });
         buttonShuffle.addActionListener(e -> {
             delegate.reset();
+            this.rakutenLinkMainView.requestFocus();
         });
 
         JPanel timelinePanel= new JPanel();
