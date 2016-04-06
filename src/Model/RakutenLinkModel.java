@@ -51,6 +51,14 @@ public class RakutenLinkModel extends AbstractModel {
         //初始化棋盘，成对储存棋盘，棋盘为满。
         tokenCnt = tc;
         Matrix = new int[sizeRow][sizeColumn];
+        for (int i = 0; i < sizeRow; i++) {
+            Matrix[i][0]=-1;
+            Matrix[i][sizeColumn-1]=-1;
+        }
+        for (int i = 0; i < sizeColumn; i++) {
+            Matrix[0][i]=-1;
+            Matrix[sizeRow-1][i]=-1;
+        }
         //要保证Column是偶数!
         for(int i = 1; i< sizeRow-1; ++i)for(int j = 1; j< sizeColumn-1; j+=2){
             Matrix[i][j]=(int)(Math.random()*tokenCnt);
