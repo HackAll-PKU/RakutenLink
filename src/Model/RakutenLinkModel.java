@@ -67,9 +67,7 @@ public class RakutenLinkModel extends AbstractModel {
                 Matrix[i][j] = (int) (Math.random() * tokenCnt);
                 Matrix[i][j + 1] = Matrix[i][j];
             }
-        do {
-            shuffle();
-        } while (Dead());
+       shuffle();
     }
 
     /**
@@ -128,6 +126,7 @@ public class RakutenLinkModel extends AbstractModel {
                 if (Matrix[i][j] != -1) Matrix[i][j] = blockList.get(index++);
             }
         }
+        while (dead()){shuffle();};
     }
 
     private int[] getRow(int x1, int x2, int y1, int y2) {
