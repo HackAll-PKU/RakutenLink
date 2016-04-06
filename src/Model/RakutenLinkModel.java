@@ -2,7 +2,10 @@ package Model;
 
 import Controller.RakutenLinkMainController;
 
-import static Controller.RakutenLinkMainController.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by ChenLetian on 4/5/16.
@@ -48,7 +51,8 @@ public class RakutenLinkModel extends AbstractModel {
         //初始化棋盘，成对储存棋盘，棋盘为满。
         tokenCnt = tc;
         Matrix = new int[sizeRow][sizeColumn];
-        for(int i = 0; i< sizeRow; ++i)for(int j = 0; j< sizeColumn; j+=2){
+        //要保证Column是偶数!
+        for(int i = 1; i< sizeRow-1; ++i)for(int j = 1; j< sizeColumn-1; j+=2){
             Matrix[i][j]=(int)(Math.random()*tokenCnt);
             Matrix[i][j+1]=Matrix[i][j];
         }
@@ -61,7 +65,7 @@ public class RakutenLinkModel extends AbstractModel {
      * 判断是否为死局
      * @return 是否为死局
      */
-    boolean Dead(){
+    private boolean Dead(){
         return false;
     }
 
@@ -69,7 +73,7 @@ public class RakutenLinkModel extends AbstractModel {
      * 判断是否游戏胜利
      * @return 是否游戏胜利
      */
-    boolean win(){
+    private boolean win(){
         for(int i = 0; i< sizeRow; ++i)for(int j = 0; j< sizeColumn; ++j)if(Matrix[i][j]!=-1)return false;
         return true;
     }
@@ -93,20 +97,22 @@ public class RakutenLinkModel extends AbstractModel {
         }
     }
 
-    private int randInt(int max){
-        return (int)(Math.random()*max);
-    }
-
     /**
      * 重排棋盘
      */
     public void shuffle(){
-        for (int i=1;i<=50;i++){
-            int x1=randInt(sizeRow); int y1=randInt(sizeColumn);
-            int x2=randInt(sizeRow); int y2=randInt(sizeColumn);
-            int tmp=Matrix[x1][y1];
-            Matrix[x1][y1]=Matrix[x2][y2];
-            Matrix[x2][y2]=tmp;
+        List<Integer> blockList=new ArrayList<>();
+        for (int i = 1; i < sizeRow-1; i++) {
+            for (int j = 1; j < sizeColumn-1; j++) {
+                if(Matrix[i][j]!=-1)blockList.add(j);
+            }
+        }
+        Collections.shuffle(blockList);
+        int index=0;
+        for (int i = 1; i < sizeRow-1; i++) {
+            for (int j = 1; j < sizeColumn-1; j++) {
+                if(Matrix[i][j]!=-1)Matrix[i][j]=blockList.get(index++);
+            }
         }
     }
 
