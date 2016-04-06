@@ -18,9 +18,15 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     public static final String GameHasNoBlocksToClear = "GameHasNoBlocksToClear";
     public static final String GameTimesUp = "GameTimesUp";
 
+    /*
     final int blockTypes = 20;
     final int rowNumber = 10;
     final int columnNumber = 20;
+    /*/
+    final int blockTypes = 3;
+    final int rowNumber = 5;
+    final int columnNumber = 6;
+    //*/
 
     public RakutenLinkMainController() {
         mainModel = new RakutenLinkModel(rowNumber, columnNumber);
