@@ -122,20 +122,22 @@ public class RakutenLinkModel extends AbstractModel {
      * 重排棋盘
      */
     public void shuffle() {
-        List<Integer> blockList = new ArrayList<>();
-        for (int i = 1; i < sizeRow - 1; i++) {
-            for (int j = 1; j < sizeColumn - 1; j++) {
-                if (Matrix[i][j] != -1) blockList.add(j);
+        do {
+            List<Integer> blockList = new ArrayList<>();
+            for (int i = 1; i < sizeRow - 1; i++) {
+                for (int j = 1; j < sizeColumn - 1; j++) {
+                    if (Matrix[i][j] != -1) blockList.add(Matrix[i][j]);
+                }
+            }
+            Collections.shuffle(blockList);
+            int index = 0;
+            for (int i = 1; i < sizeRow - 1; i++) {
+                for (int j = 1; j < sizeColumn - 1; j++) {
+                    if (Matrix[i][j] != -1) Matrix[i][j] = blockList.get(index++);
+                }
             }
         }
-        Collections.shuffle(blockList);
-        int index = 0;
-        for (int i = 1; i < sizeRow - 1; i++) {
-            for (int j = 1; j < sizeColumn - 1; j++) {
-                if (Matrix[i][j] != -1) Matrix[i][j] = blockList.get(index++);
-            }
-        }
-        while (Dead()){shuffle();};
+        while (Dead());
     }
 
     private int[] getRow(int x1, int x2, int y1, int y2) {
@@ -164,11 +166,6 @@ public class RakutenLinkModel extends AbstractModel {
 
     private int[] getCol(int x1, int x2, int y1, int y2) {
         int i1 = x1, j1 = x1, i2 = x2, j2 = x2;
-        while (i1 > 0 && Matrix[i1 - 1][y1] == -1) i1--;
-        while (j1 < sizeRow - 1 && Matrix[j1 + 1][y1] == -1) j1++;
-        while (i2 > 0 && Matrix[i2 - 1][y2] == -1) i2--;
-        while (j2 < sizeRow - 1 && Matrix[j2 + 1][y2] == -1) j2++;
-
         List<Integer> col1List = new ArrayList<>();
         List<Integer> col2List = new ArrayList<>();
 
