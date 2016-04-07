@@ -19,6 +19,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     private RakutenLinkBlockDataSource dataSource;
     private RakutenLinkViewDelegate delegate;
     private RakutenLinkBlock[][] buttons;
+    private JProgressBar progressBar;
 
     public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkViewDelegate delegate) {
         this.dataSource = dataSource;
@@ -31,7 +32,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     public void initializeRakutenLinkMainView(int rowNumber, int columnNumber){
         // main Panel
         rakutenLinkMainView = new JPanel();
-        rakutenLinkMainView.setBorder(new EmptyBorder(10, 20, 10, 20));
+        rakutenLinkMainView.setBorder(new EmptyBorder(0, 0, 0, 0));
         rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
 
         // center Panel
@@ -75,6 +76,9 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         // north panel
         JPanel timelinePanel= new JPanel();
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        progressBar = new JProgressBar(0, 100);
+        timelinePanel.add(progressBar);
+        progressBar.setValue(50);
         JLabel timeline=new JLabel();
         timeline.setSize(100, 100);
         timeline.setText("Time Remain: 60s");
