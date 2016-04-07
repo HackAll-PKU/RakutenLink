@@ -29,11 +29,12 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
      * 初始化主界面
      */
     public void initializeRakutenLinkMainView(int rowNumber, int columnNumber){
+        // main Panel
         rakutenLinkMainView = new JPanel();
-
         rakutenLinkMainView.setBorder(new EmptyBorder(10, 20, 10, 20));
         rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
 
+        // center Panel
         JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rowNumber, columnNumber));
         rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
@@ -53,6 +54,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             for (RakutenLinkBlock button: buttonRow)
                 gridPanel.add(button);
 
+        // south panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,30,10));
         rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
@@ -70,6 +72,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             this.rakutenLinkMainView.requestFocus();
         });
 
+        // north panel
         JPanel timelinePanel= new JPanel();
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         JLabel timeline=new JLabel();
