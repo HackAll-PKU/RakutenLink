@@ -25,5 +25,4 @@ public abstract class AbstractModel {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-
 }

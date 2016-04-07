@@ -2,6 +2,8 @@ package Model;
 
 import Controller.RakutenLinkMainController;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -213,7 +215,6 @@ public class RakutenLinkModel extends AbstractModel {
 
     }
 
-
     private boolean clear(int x1, int y1, int x2, int y2) {
         if (x1 == x2) {
             for (int i = Math.min(y1, y2) + 1; i <= Math.max(y1, y2) - 1; ++i) if (Matrix[x1][i] != -1) return false;
@@ -288,13 +289,6 @@ public class RakutenLinkModel extends AbstractModel {
             for (int j = 0; j < sizeColumn; j++) System.out.printf("%d ", Matrix[i][j]);
             System.out.println();
         }
-    }
-
-    /**
-     *
-     */
-    void timing() {
-        firePropertyChange(RakutenLinkMainController.GameTimesUp, false, true);
     }
 
 }

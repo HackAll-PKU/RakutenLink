@@ -1,8 +1,10 @@
 package Controller;
 
 import Model.RakutenLinkModel;
+import Model.RakutenLinkTimer;
 import View.RakutenLinkMainView;
 
+import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.util.Objects;
 
@@ -14,15 +16,18 @@ public class RakutenLinkMainController extends AbstractController implements Rak
 
     private RakutenLinkMainView mainView;
     private RakutenLinkModel mainModel;
+    private RakutenLinkTimer timer;
 
     public static final String GameHasWon = "GameWin";
     public static final String GameHasNoBlocksToClear = "GameHasNoBlocksToClear";
     public static final String GameTimesUp = "GameTimesUp";
+    public static final String GameTimeChange = "GameTimeChange";
 
     //*
     final int blockTypes = 20;
     final int rowNumber = 10;
     final int columnNumber = 20;
+    final int gameTime = 60;
     /*/
     final int blockTypes = 3;
     final int rowNumber = 5;
@@ -36,6 +41,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         mainView = new RakutenLinkMainView(this, this);
         mainView.initializeRakutenLinkMainView(rowNumber, columnNumber);
         addView(mainView);
+        mainView.askForReady();
         resetSelectStatus();
     }
 
@@ -47,12 +53,23 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         }
         else
         if (Objects.equals(evt.getPropertyName(), GameHasNoBlocksToClear)) {
-            mainView.reset();
+            mainView.reload();
         }
         else
         if (Objects.equals(evt.getPropertyName(), GameTimesUp)) {
             mainView.noTimeRemaining();
         }
+        else
+        if (Objects.equals(evt.getPropertyName(), GameTimeChange)) {
+            SwingUtilities.invokeLater(() -> mainView.updateTime((double)evt.getNewValue() / 100.0, gameTime - (double)evt.getNewValue() / 100.0 * gameTime));
+        }
+    }
+
+    @Override
+    public void startGame() {
+        timer = new RakutenLinkTimer(gameTime);
+        timer.addPropertyChangeListener(this);
+        timer.start();
     }
 
     public void shutDown(){
@@ -63,15 +80,17 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     @Override
     public void shuffle(){
         mainModel.shuffle();
-        mainView.reset();
+        mainView.reload();
         resetSelectStatus();
     }
 
     @Override
     public void restartGame() {
+        timer.stop();
         mainModel.reset(blockTypes);
-        mainView.reset();
+        mainView.reload();
         resetSelectStatus();
+        mainView.askForReady();
     }
 
     private int hasSelectedCount;

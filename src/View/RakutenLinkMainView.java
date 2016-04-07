@@ -20,6 +20,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     private RakutenLinkViewDelegate delegate;
     private RakutenLinkBlock[][] buttons;
     private JProgressBar progressBar;
+    private JLabel timeLine;
 
     public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkViewDelegate delegate) {
         this.dataSource = dataSource;
@@ -78,12 +79,12 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         progressBar = new JProgressBar(0, 100);
         timelinePanel.add(progressBar);
-        progressBar.setValue(50);
-        JLabel timeline=new JLabel();
-        timeline.setSize(100, 100);
-        timeline.setText("Time Remain: 60s");
-        timeline.setBackground(Color.black);
-        timelinePanel.add(timeline);
+        progressBar.setValue(0);
+        timeLine=new JLabel();
+        timeLine.setSize(100, 100);
+        timeLine.setText("Time Remain: 60.0s");
+        timeLine.setBackground(Color.black);
+        timelinePanel.add(timeLine);
         rakutenLinkMainView.add(timelinePanel,BorderLayout.NORTH);
 
         rakutenLinkMainFrame = new JFrame("乐天连连看");
@@ -96,17 +97,6 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         this.rakutenLinkMainView.requestFocus();
 
         reload();
-    }
-
-    @Override
-    public void makeBlockSelected(int rowBlock, int columnBlock) {
-
-    }
-
-    @Override
-    public void makeBlockUnselected(int rowBlock, int columnBlock) {
-        // 通过让panel获得焦点的方式让已经被选择的块失去焦点
-        this.rakutenLinkMainView.requestFocus();
     }
 
     @Override
@@ -123,20 +113,10 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     }
 
     @Override
-    public void noValidFutureActions() {
-        // 将会提示用户不可以进行更多操作，并且强制重置游戏。
-        // @author: archimekai, Zac Chan
-        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame, "There are no more blocks that you can link. So we will shuffle","Info",
-                JOptionPane.INFORMATION_MESSAGE);
-
-        delegate.shuffle();
-    }
-
-    @Override
     public void noTimeRemaining() {
         // 通过弹出对话框的方式提醒用户时间到了
         JOptionPane.showMessageDialog(this.rakutenLinkMainFrame,"Time is up! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
-        delegate.shuffle();
+        delegate.restartGame();
     }
 
     @Override
@@ -159,21 +139,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     }
 
     @Override
-    public void reset() {
-        reload();
-    }
-
-    @Override
-    public void initialize() {
-        reload();
-    }
-
-
-    /**
-     * 从dataSource里面取得所有的label数据和状态并显示到view中
-     * 如果需要让游戏初始化，则需要controller先调用model的reset接口，model中的数据初始化后，再调用view 的reset（）函数把重置好的数据加载进来。
-     */
-    private void reload(){
+    public void reload() {
         for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
@@ -182,21 +148,32 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         }
     }
 
+    @Override
+    public void updateTime(double progress, double remainingTime) {
+        SwingUtilities.invokeLater(() -> {
+            progressBar.setValue((int)(progress * 100));
+            timeLine.setText("Time Remain: " + String.format("%.1f", remainingTime) + "s");
+        });
+    }
+
+    @Override
+    public void askForReady() {
+        while (JOptionPane.showConfirmDialog(this.rakutenLinkMainFrame, "Are you ready?", "Ready", JOptionPane.YES_NO_OPTION) == 1);
+        delegate.startGame();
+    }
+
     private void reloadAtRowAndColumn(int row, int column) {
         buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
         buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
     }
 
     private ImageIcon getIconAtRowAndColumn(int row, int column) {
-        if (dataSource.typeForBlockAtRowAndColumn(row, column) == -1) {
-            return null;
-        }
+        if (dataSource.typeForBlockAtRowAndColumn(row, column) == -1) return null;
         else {
             ImageIcon icon = new ImageIcon("resource/" + String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)) + ".png");
             Image image = icon.getImage();
             Image scaledImage = image.getScaledInstance(buttons[row][column].getWidth(), buttons[row][column].getHeight(), Image.SCALE_SMOOTH);
-            ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
-            return scaledImageIcon;
+            return new ImageIcon(scaledImage);
         }
     }
 }

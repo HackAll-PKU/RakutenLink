@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 /**
  * Created by ChenLetian on 4/1/16.
+ * 抽象Controller类
  */
 public class AbstractController implements PropertyChangeListener {
 

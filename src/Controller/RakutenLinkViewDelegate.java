@@ -7,12 +7,17 @@ package Controller;
 public interface RakutenLinkViewDelegate {
 
     /**
+     * 开始游戏时调用
+     */
+    void startGame();
+
+    /**
      * 退出程序时调用。
      */
     void shutDown();
 
     /**
-     * 重置整个游戏，需要先重置model，再重置view
+     * 重排游戏，需要先重排model，再重新加载view
      */
     void shuffle();
 
