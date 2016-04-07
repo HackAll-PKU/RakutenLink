@@ -83,6 +83,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainFrame.setContentPane(this.rakutenLinkMainView);
         rakutenLinkMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         rakutenLinkMainFrame.setPreferredSize(new Dimension(800, 600));
+        rakutenLinkMainFrame.setResizable(false);
         rakutenLinkMainFrame.pack();
         rakutenLinkMainFrame.setVisible(true);
         this.rakutenLinkMainView.requestFocus();
