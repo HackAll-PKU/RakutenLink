@@ -4,6 +4,7 @@ import Controller.RakutenLinkMainController;
 
 /**
  * Created by ChenLetian on 4/7/16.
+ * RakutenLink控制时间的类
  */
 public class RakutenLinkTimer extends AbstractModel {
 

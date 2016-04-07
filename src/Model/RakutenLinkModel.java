@@ -2,20 +2,18 @@ package Model;
 
 import Controller.RakutenLinkMainController;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by ChenLetian on 4/5/16.
+ * RakutenLink主Model类
  */
 public class RakutenLinkModel extends AbstractModel {
 
     final int sizeRow;
     final int sizeColumn;
-    private int tokenCnt;
 
     private int[][] Matrix;//储存棋盘状态信息，-1=null
 
@@ -53,7 +51,6 @@ public class RakutenLinkModel extends AbstractModel {
      */
     public void reset(int tc) {
         //初始化棋盘，成对储存棋盘，棋盘为满。
-        tokenCnt = tc;
         Matrix = new int[sizeRow][sizeColumn];
         for (int i = 0; i < sizeRow; i++) {
             Matrix[i][0] = -1;
@@ -66,7 +63,7 @@ public class RakutenLinkModel extends AbstractModel {
         //要保证Column是偶数!
         for (int i = 1; i < sizeRow - 1; ++i)
             for (int j = 1; j < sizeColumn - 1; j += 2) {
-                Matrix[i][j] = (int) (Math.random() * tokenCnt);
+                Matrix[i][j] = (int) (Math.random() * tc);
                 Matrix[i][j + 1] = Matrix[i][j];
             }
        shuffle();

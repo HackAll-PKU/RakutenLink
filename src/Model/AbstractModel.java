@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 
 /**
  * Created by ChenLetian on 4/1/16.
+ * 抽象Model类
  */
 public abstract class AbstractModel {
     protected PropertyChangeSupport propertyChangeSupport;

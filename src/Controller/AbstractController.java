@@ -18,8 +18,8 @@ public class AbstractController implements PropertyChangeListener {
     protected ArrayList<AbstractModel> registeredModels;
 
     public AbstractController() {
-        registeredViews = new ArrayList<AbstractViewPanel>();
-        registeredModels = new ArrayList<AbstractModel>();
+        registeredViews = new ArrayList<>();
+        registeredModels = new ArrayList<>();
     }
 
     public void addModel(AbstractModel model) {
@@ -62,7 +62,7 @@ public class AbstractController implements PropertyChangeListener {
 
         for (AbstractModel model: registeredModels) {
             try {
-                Method method = model.getClass().getMethod("set"+propertyName, new Class[] {newValue.getClass()});
+                Method method = model.getClass().getMethod("set"+propertyName, newValue.getClass());
                 method.invoke(model, newValue);
             }
             catch (Exception ex) {
