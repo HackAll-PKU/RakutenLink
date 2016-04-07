@@ -45,7 +45,6 @@ public class RakutenLinkTimer extends AbstractModel {
     }
 
     public void stop() {
-        timerThread.interrupt();
         alive = false;
     }
 }
