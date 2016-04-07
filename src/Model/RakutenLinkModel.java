@@ -92,6 +92,26 @@ public class RakutenLinkModel extends AbstractModel {
     }
 
     /**
+     * 获取提示
+     * @return 当前可消除的两个块的坐标
+     */
+    public int[][] getHint(){
+        for (int x1 = 0; x1 < sizeRow; ++x1)
+            for (int y1 = 0; y1 < sizeColumn; ++y1)
+                if (Matrix[x1][y1] != -1) {
+                    for (int x2 = 0; x2 < sizeRow; ++x2)
+                        for (int y2 = 0; y2 < sizeColumn; ++y2) {
+                            if ((Matrix[x2][y2] != -1) && !(x1 == x2 && y1 == y2)) {
+                                if (Removable(x1, y1, x2, y2)) {
+                                    return new int[][]{{x1,y1},{x2,y2}};
+                                }
+                            }
+                        }
+                }
+        return new int[][]{};
+    }
+
+    /**
      * 判断是否游戏胜利
      *
      * @return 是否游戏胜利
@@ -113,7 +133,7 @@ public class RakutenLinkModel extends AbstractModel {
         Matrix[x1][y1] = -1;
         Matrix[x2][y2] = -1;
         if (win()) {
-            firePropertyChange(RakutenLinkMainController.GameHasWinned, false, true);
+            firePropertyChange(RakutenLinkMainController.GameHasWon, false, true);
         }
         if (Dead()) {
             shuffle();
@@ -213,8 +233,10 @@ public class RakutenLinkModel extends AbstractModel {
      * @param y2 第二个方块的列
      * @return 是否可消除
      */
+    @Deprecated
     public boolean Removable(int x1, int y1, int x2, int y2) {//判断是否可消除
-        if (!(x1==x2 && y1==y2) && Matrix[x1][y1] == Matrix[x2][y2]) {
+        return getLinkNodes(x1,y1,x2,y2).length!=0;
+        /*if (!(x1==x2 && y1==y2) && Matrix[x1][y1] == Matrix[x2][y2]) {
             int[] row = getRow(x1, x2, y1, y2);
             if (row.length > 0) {
                 //System.out.printf("%d,%d\n", row[0], row[1]);
@@ -230,7 +252,34 @@ public class RakutenLinkModel extends AbstractModel {
                 }
             }
         }
-        return false;
+        return false;*/
+    }
+
+    /**
+     * 获取路径
+     *
+     * @param x1 第一个方块的行
+     * @param y1 第一个方块的列
+     * @param x2 第二个方块的行
+     * @param y2 第二个方块的列
+     * @return 路径节点坐标(若不能连通则返回空)
+     */
+    public int[][] getLinkNodes(int x1, int y1, int x2, int y2){
+        if (!(x1==x2 && y1==y2) && Matrix[x1][y1] == Matrix[x2][y2]) {
+            int[] row = getRow(x1, x2, y1, y2);
+            if (row.length > 0) {
+                for (int i = row[0]; i <= row[1]; ++i) {
+                    if (clear(x1, i, x2, i)) return new int[][]{{x1,i},{x2,i}};
+                }
+            }
+            int[] col = getCol(x1, x2, y1, y2);
+            if (col.length > 0) {
+                for (int i = col[0]; i <= col[1]; ++i) {
+                    if (clear(i, y1, i, y2)) return new int[][]{{i,y1},{i,y2}};
+                }
+            }
+        }
+        return new int[][]{};
     }
 
     // for debug

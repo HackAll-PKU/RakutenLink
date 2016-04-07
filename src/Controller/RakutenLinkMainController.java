@@ -15,11 +15,11 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     private RakutenLinkMainView mainView;
     private RakutenLinkModel mainModel;
 
-    public static final String GameHasWinned = "GameWin";
+    public static final String GameHasWon = "GameWin";
     public static final String GameHasNoBlocksToClear = "GameHasNoBlocksToClear";
     public static final String GameTimesUp = "GameTimesUp";
 
-    /*
+    //*
     final int blockTypes = 20;
     final int rowNumber = 10;
     final int columnNumber = 20;
@@ -42,7 +42,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         super.propertyChange(evt);
-        if (Objects.equals(evt.getPropertyName(), GameHasWinned)) {
+        if (Objects.equals(evt.getPropertyName(), GameHasWon)) {
             mainView.didSuccess();
         }
         else
@@ -92,11 +92,15 @@ public class RakutenLinkMainController extends AbstractController implements Rak
             hasSelectedColumn = column;
         }
         else {
-            if (mainModel.Removable(hasSelectedRow, hasSelectedColumn, row, column)) {
+            int[][] linkNodes=mainModel.getLinkNodes(hasSelectedRow, hasSelectedColumn, row, column);
+            if(linkNodes.length!=0){
+            //if (mainModel.Removable(hasSelectedRow, hasSelectedColumn, row, column)) {
                 mainModel.clearTwoBlocks(hasSelectedRow, hasSelectedColumn, row, column);
                 if ((hasSelectedRow != -1)) {
                     mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
                 }
+
+                //TODO:draw line
                 resetSelectStatus();
             }
             else {
