@@ -32,6 +32,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     final int blockTypes = 3;
     final int rowNumber = 5;
     final int columnNumber = 6;
+    final int gameTime = 30;
     //*/
 
     public RakutenLinkMainController() {
@@ -49,6 +50,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     public void propertyChange(PropertyChangeEvent evt) {
         super.propertyChange(evt);
         if (Objects.equals(evt.getPropertyName(), GameHasWon)) {
+            timer.stop();
             mainView.didSuccess();
         }
         else
@@ -61,7 +63,9 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         }
         else
         if (Objects.equals(evt.getPropertyName(), GameTimeChange)) {
-            SwingUtilities.invokeLater(() -> mainView.updateTime((double)evt.getNewValue() / 100.0, gameTime - (double)evt.getNewValue() / 100.0 * gameTime));
+            double progress = 1 - (double)evt.getNewValue() / 100.0;
+            double remainingTime = gameTime - (double)evt.getNewValue() / 100.0 * gameTime;
+            SwingUtilities.invokeLater(() -> mainView.updateTime(progress, remainingTime));
         }
     }
 
