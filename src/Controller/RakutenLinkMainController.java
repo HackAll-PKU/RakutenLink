@@ -28,6 +28,8 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     final int rowNumber = 10;
     final int columnNumber = 20;
     final int gameTime = 60;
+    final int clearSuccessAddTime = 5;
+    final int clearUnSuccessMinusTime = 5;
     /*/
     final int blockTypes = 3;
     final int rowNumber = 5;
@@ -63,9 +65,8 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         }
         else
         if (Objects.equals(evt.getPropertyName(), GameTimeChange)) {
-            double progress = 1 - (double)evt.getNewValue() / 100.0;
-            double remainingTime = gameTime - (double)evt.getNewValue() / 100.0 * gameTime;
-            SwingUtilities.invokeLater(() -> mainView.updateTime(progress, remainingTime));
+            double remainingTime = (double)evt.getNewValue();
+            SwingUtilities.invokeLater(() -> mainView.updateTime(remainingTime / gameTime, remainingTime));
         }
     }
 
@@ -119,15 +120,16 @@ public class RakutenLinkMainController extends AbstractController implements Rak
             if(linkNodes.length!=0){
             //if (mainModel.Removable(hasSelectedRow, hasSelectedColumn, row, column)) {
                 mainModel.clearTwoBlocks(hasSelectedRow, hasSelectedColumn, row, column);
+                timer.addTime(clearSuccessAddTime);
                 if ((hasSelectedRow != -1)) {
                     mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
                 }
-
                 //TODO:draw line
                 resetSelectStatus();
             }
             else {
                 mainView.didClearTwoBlocksUnsuccessful(hasSelectedRow, hasSelectedColumn, row, column);
+                timer.minusTime(clearUnSuccessMinusTime);
                 hasSelectedCount = 1;
                 hasSelectedRow = row;
                 hasSelectedColumn = column;

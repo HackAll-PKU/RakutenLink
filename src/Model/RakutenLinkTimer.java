@@ -8,9 +8,10 @@ import Controller.RakutenLinkMainController;
  */
 public class RakutenLinkTimer extends AbstractModel {
 
-    private int gameTime; // in second
+    private final int gameTime; // in second
     private Thread timerThread;
     private Boolean alive;
+    private double remainingTime;
 
     public RakutenLinkTimer(int gameTime) {
         super();
@@ -20,24 +21,34 @@ public class RakutenLinkTimer extends AbstractModel {
 
     public void start() {
         timerThread = new Thread(() -> {
-            double progress = 0;
+            remainingTime = gameTime;
             //Initialize progress property.
-            setProgress(0);
-            while (progress < 100) {
+            setRemainingTime(remainingTime);
+            while (remainingTime > 0) {
                 //Sleep for up to one second.
                 try {
-                    Thread.sleep(gameTime * 1000 / 100);
+                    Thread.sleep(100);
                 } catch (InterruptedException ignore) {}
-                progress += 1;
-                setProgress(Math.min((int)progress, 100));
+                remainingTime -= 0.1;
+                setRemainingTime(remainingTime);
             }
             done();
         });
         timerThread.start();
     }
 
-    private void setProgress(double progress) {
-        if (alive) firePropertyChange(RakutenLinkMainController.GameTimeChange, null, progress);
+    public void addTime(double time) {
+        remainingTime += time;
+        remainingTime = Math.min(remainingTime, gameTime);
+    }
+
+    public void minusTime(double time) {
+        remainingTime -= time;
+        remainingTime = Math.max(remainingTime, 0);
+    }
+
+    private void setRemainingTime(double remainingTime) {
+        if (alive) firePropertyChange(RakutenLinkMainController.GameTimeChange, null, remainingTime);
     }
 
     protected void done() {
