@@ -139,6 +139,8 @@ public class RakutenLinkMainController extends AbstractController implements Rak
 
     @Override
     public void DidClickBlockAtRowAndColumn(int row, int column) {
+        if (row == hasSelectedRow && column == hasSelectedColumn) return;
+
         hasSelectedCount++;
         if (hasSelectedCount == 1) {
             hasSelectedRow = row;
