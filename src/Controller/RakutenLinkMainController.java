@@ -27,18 +27,18 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     final int blockTypes = 20;
     final int rowNumber = 10;
     final int columnNumber = 20;
-    final int gameTime = 60;
-    final int clearSuccessAddTime = 5;
-    final int clearUnSuccessMinusTime = 5;
     /*/
     final int blockTypes = 3;
     final int rowNumber = 5;
     final int columnNumber = 6;
-    final int gameTime = 30;
     //*/
 
-    public int shuffleCount;
-    public int hintCount;
+    final int gameTime = 60;
+    final int clearSuccessAddTime = 5;
+    final int clearUnSuccessMinusTime = 5;
+
+    private int shuffleCount;
+    private int hintCount;
 
     public RakutenLinkMainController() {
         mainModel = new RakutenLinkModel(rowNumber, columnNumber);
@@ -150,11 +150,9 @@ public class RakutenLinkMainController extends AbstractController implements Rak
             int[][] linkNodes=mainModel.getLinkNodes(hasSelectedRow, hasSelectedColumn, row, column);
             if(linkNodes.length!=0){
             //if (mainModel.Removable(hasSelectedRow, hasSelectedColumn, row, column)) {
+                mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
                 mainModel.clearTwoBlocks(hasSelectedRow, hasSelectedColumn, row, column);
                 timer.addTime(clearSuccessAddTime);
-                if ((hasSelectedRow != -1)) {
-                    mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
-                }
                 //TODO:draw line
                 resetSelectStatus();
             }

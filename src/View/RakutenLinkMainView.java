@@ -173,7 +173,6 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             default:
                 break;
         }
-
     }
 
     @Override
@@ -219,8 +218,10 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     }
 
     private void reloadAtRowAndColumn(int row, int column) {
-        buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
-        buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
+        SwingUtilities.invokeLater(()->{
+            buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
+            buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
+        });
     }
 
     private ImageIcon getIconAtRowAndColumn(int row, int column) {
