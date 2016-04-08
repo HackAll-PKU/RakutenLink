@@ -90,6 +90,11 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     }
 
     @Override
+    public int[][] requestHint() {
+        return mainModel.getHint();
+    }
+
+    @Override
     public void restartGame() {
         timer.stop();
         mainModel.reset(blockTypes);
