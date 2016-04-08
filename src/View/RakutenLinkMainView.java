@@ -23,6 +23,10 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     private RakutenLinkBlock[][] buttons;
     private JProgressBar progressBar;
     private JLabel timeLine;
+    private JLabel shuffleCountLabel;
+    private JLabel hintCountLabel;
+    private JButton buttonShuffle;
+    private JButton buttonHint;
 
     public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkViewDelegate delegate) {
         this.dataSource = dataSource;
@@ -64,8 +68,8 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
 
         JButton buttonNew = new JButton("New Game");
-        JButton buttonShuffle = new JButton("Shuffle");
-        JButton buttonHint = new JButton("Hint");
+        buttonShuffle = new JButton("Shuffle");
+        buttonHint = new JButton("Hint");
         buttonPanel.add(buttonNew);
         buttonPanel.add(buttonShuffle);
         buttonPanel.add(buttonHint);
@@ -74,7 +78,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             this.rakutenLinkMainView.requestFocus();
         });
         buttonShuffle.addActionListener(e -> {
-            delegate.shuffle();
+            delegate.requestShuffle();
             this.rakutenLinkMainView.requestFocus();
         });
         buttonHint.addActionListener(e -> {
@@ -108,7 +112,17 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         timeLine.setSize(100, 100);
         timeLine.setText("Time Remain: 60.0s");
         timeLine.setBackground(Color.black);
+        shuffleCountLabel=new JLabel();
+        shuffleCountLabel.setSize(100, 100);
+        shuffleCountLabel.setText("Shuffle: 3");
+        shuffleCountLabel.setBackground(Color.black);
+        hintCountLabel=new JLabel();
+        hintCountLabel.setSize(100, 100);
+        hintCountLabel.setText("Hint: 3");
+        hintCountLabel.setBackground(Color.black);
         timelinePanel.add(timeLine);
+        timelinePanel.add(shuffleCountLabel);
+        timelinePanel.add(hintCountLabel);
         rakutenLinkMainView.add(timelinePanel,BorderLayout.NORTH);
 
         rakutenLinkMainFrame = new JFrame("乐天连连看");
@@ -178,6 +192,24 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             progressBar.setValue((int)(progress * 100));
             timeLine.setText("Time Remain: " + String.format("%04.1f", remainingTime) + "s");
         });
+    }
+
+    @Override
+    public void updateCheatStatus(int type, int value) {
+        //shuffle
+        if(type==0){
+            SwingUtilities.invokeLater(() -> {
+                shuffleCountLabel.setText("Shuffle: " + String.valueOf(value));
+                buttonShuffle.setEnabled(value > 0);
+            });
+        }
+        //hint
+        if(type==1){
+            SwingUtilities.invokeLater(() -> {
+                hintCountLabel.setText("Hint: " + String.valueOf(value));
+                buttonHint.setEnabled(value > 0);
+            });
+        }
     }
 
     @Override

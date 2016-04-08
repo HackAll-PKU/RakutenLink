@@ -37,6 +37,9 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     final int gameTime = 30;
     //*/
 
+    public int shuffleCount;
+    public int hintCount;
+
     public RakutenLinkMainController() {
         mainModel = new RakutenLinkModel(rowNumber, columnNumber);
         mainModel.reset(blockTypes);
@@ -75,6 +78,8 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         timer = new RakutenLinkTimer(gameTime);
         timer.addPropertyChangeListener(this);
         timer.start();
+        shuffleCount=3;
+        hintCount=3;
     }
 
     public void shutDown(){
@@ -91,7 +96,19 @@ public class RakutenLinkMainController extends AbstractController implements Rak
 
     @Override
     public int[][] requestHint() {
-        return mainModel.getHint();
+        if (hintCount > 0) {
+            mainView.updateCheatStatus(1,--hintCount);
+            return mainModel.getHint();
+        }
+        else return new int[][]{};
+    }
+
+    @Override
+    public void requestShuffle() {
+        if (shuffleCount > 0){
+            shuffle();
+            mainView.updateCheatStatus(0,--shuffleCount);
+        }
     }
 
     @Override
@@ -100,6 +117,8 @@ public class RakutenLinkMainController extends AbstractController implements Rak
         mainModel.reset(blockTypes);
         mainView.reload();
         resetSelectStatus();
+        mainView.updateCheatStatus(0, shuffleCount = 3);
+        mainView.updateCheatStatus(1, hintCount = 3);
         mainView.askForReady();
     }
 

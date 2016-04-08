@@ -39,6 +39,11 @@ public interface RakutenLinkViewDelegate {
     void DidSelectionCanceled();
 
     /**
+     * 用户请求洗牌
+     */
+    void requestShuffle();
+
+    /**
      * 用户请求提示
      */
     int[][] requestHint();

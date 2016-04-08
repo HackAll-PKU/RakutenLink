@@ -51,6 +51,13 @@ public interface ViewUpdatable {
     void updateTime(double progress, double remainingTime);
 
     /**
+     * 更新作弊次数
+     * @param type 0为shuffle,1为hint
+     * @param value 新值
+     */
+    void updateCheatStatus(int type, int value);
+
+    /**
      * 询问是否准备好游戏开始
      */
     void askForReady();
