@@ -6,6 +6,8 @@ import Controller.RakutenLinkViewDelegate;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -72,6 +74,14 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         buttonShuffle.addActionListener(e -> {
             delegate.shuffle();
             this.rakutenLinkMainView.requestFocus();
+        });
+        rakutenLinkMainView.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                ((JPanel)e.getSource()).requestFocus();
+                delegate.DidSelectionCanceled();
+            }
         });
 
         // north panel
@@ -152,7 +162,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     public void updateTime(double progress, double remainingTime) {
         SwingUtilities.invokeLater(() -> {
             progressBar.setValue((int)(progress * 100));
-            timeLine.setText("Time Remain: " + String.format("%.1f", remainingTime) + "s");
+            timeLine.setText("Time Remain: " + String.format("%04.1f", remainingTime) + "s");
         });
     }
 

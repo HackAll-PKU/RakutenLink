@@ -33,4 +33,9 @@ public interface RakutenLinkViewDelegate {
      */
     void DidClickBlockAtRowAndColumn(int row, int column);
 
+    /**
+     * 用户取消了当前选择
+     */
+    void DidSelectionCanceled();
+
 }

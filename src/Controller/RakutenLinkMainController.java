@@ -109,6 +109,11 @@ public class RakutenLinkMainController extends AbstractController implements Rak
     }
 
     @Override
+    public void DidSelectionCanceled() {
+        this.resetSelectStatus();
+    }
+
+    @Override
     public void DidClickBlockAtRowAndColumn(int row, int column) {
         hasSelectedCount++;
         if (hasSelectedCount == 1) {
