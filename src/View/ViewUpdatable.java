@@ -9,13 +9,13 @@ public interface ViewUpdatable {
 
     /**
      * 当两个方块被成功消去时调用,用于绘制消去成功时的有关动画和声音, 并且会将有关的方块设置为不可见
-     *
-     * @param rowBlock1 被消去的方块1的横坐标
+     *  @param rowBlock1 被消去的方块1的横坐标
      * @param columnBlock1 被消去的方块1的纵坐标
      * @param rowBlock2 被消去的方块2的横坐标
      * @param columnBlock2 被消去的方块2的纵坐标
+     * @param Nodes
      */
-    void didClearTwoBlocksSuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2);
+    void didClearTwoBlocksSuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2, int[][] Nodes);
 
 
     /**

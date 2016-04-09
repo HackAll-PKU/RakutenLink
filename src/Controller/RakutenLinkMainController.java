@@ -150,7 +150,7 @@ public class RakutenLinkMainController extends AbstractController implements Rak
             int[][] linkNodes=mainModel.getLinkNodes(hasSelectedRow, hasSelectedColumn, row, column);
             if(linkNodes.length!=0){
             //if (mainModel.Removable(hasSelectedRow, hasSelectedColumn, row, column)) {
-                mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column);
+                mainView.didClearTwoBlocksSuccessful(hasSelectedRow, hasSelectedColumn, row, column, linkNodes);
                 mainModel.clearTwoBlocks(hasSelectedRow, hasSelectedColumn, row, column);
                 timer.addTime(clearSuccessAddTime);
                 //TODO:draw line

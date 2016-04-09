@@ -27,6 +27,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     private JLabel hintCountLabel;
     private JButton buttonShuffle;
     private JButton buttonHint;
+    private JPanel pathPanel;
 
     public RakutenLinkMainView(RakutenLinkBlockDataSource dataSource, RakutenLinkViewDelegate delegate) {
         this.dataSource = dataSource;
@@ -43,9 +44,16 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
 
         // center Panel
+        pathPanel = new JPanel();
+        pathPanel.setLayout(new BorderLayout(0,0));
+
         JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rowNumber, columnNumber));
-        rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
+        //gridPanel.setOpaque(false);
+        pathPanel.add(gridPanel, BorderLayout.CENTER);
+        //rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
+        rakutenLinkMainView.add(pathPanel, BorderLayout.CENTER);
+
 
         buttons = new RakutenLinkBlock[dataSource.rowNumber()][dataSource.columnNumber()];
         for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
@@ -89,6 +97,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
                     Graphics g = btn.getGraphics();
                     g.setColor(new Color(129, 216, 207, 128));
                     g.fillRect(0, 0, btn.getWidth(), btn.getHeight());
+                    g.dispose();
                 }
             });
             this.rakutenLinkMainView.requestFocus();
@@ -138,16 +147,51 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     }
 
     @Override
-    public void didClearTwoBlocksSuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
+    public void didClearTwoBlocksSuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2, int[][] Nodes) {
         // 现在还没有加入消去的动画和连线
         reloadAtRowAndColumn(rowBlock1, columnBlock1);
         reloadAtRowAndColumn(rowBlock2, columnBlock2);
+
+        Timer drawPathTimer = new Timer(10, x -> SwingUtilities.invokeLater(() -> drawPath(new int[][]{{rowBlock1, columnBlock1}, Nodes[0], Nodes[1], {rowBlock2, columnBlock2}})));
+        drawPathTimer.setRepeats(false);
+        drawPathTimer.start();
+
+        Timer repaintTimer = new Timer(500, x -> pathPanel.repaint());
+        repaintTimer.setRepeats(false);
+        repaintTimer.start();
+
         this.rakutenLinkMainView.requestFocus();
     }
 
     @Override
     public void didClearTwoBlocksUnsuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
         buttons[rowBlock2][columnBlock2].requestFocus();
+    }
+
+    private void drawPath(int[][] Nodes) {
+        Graphics g = pathPanel.getGraphics();
+        //g.setColor(new Color(129, 216, 207));
+
+        for (int i = 0; i < Nodes.length - 1; i++) {
+            JButton btn1 = buttons[Nodes[i][0]][Nodes[i][1]];
+            JButton btn2 = buttons[Nodes[i + 1][0]][Nodes[i + 1][1]];
+            int x1 = btn1.getX() + btn1.getWidth() / 2;
+            int y1 = btn1.getY() + btn1.getHeight() / 2;
+            int x2 = btn2.getX() + btn2.getWidth() / 2;
+            int y2 = btn2.getY() + btn2.getHeight() / 2;
+            g.drawLine(x1, y1, x2, y2);
+        }
+        /*
+            for (int node = 0; node < Nodes.length - 1; node++) {
+            for (int i = Math.min(Nodes[node][0],Nodes[node+1][0]); i <= Math.max(Nodes[node][0],Nodes[node+1][0]); i++) {
+                for (int j = Math.min(Nodes[node][1],Nodes[node+1][1]); j <= Math.max(Nodes[node][1],Nodes[node+1][1]); j++) {
+                    JButton btn = buttons[i][j];
+                    g.fillRect(btn.getX(), btn.getY(), btn.getWidth(), btn.getHeight());
+                }
+            }
+        }
+        */
+        g.dispose();
     }
 
     @Override
@@ -177,12 +221,15 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
     @Override
     public void reload() {
-        for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
-            int row = i / dataSource.columnNumber();
-            int column = i % dataSource.columnNumber();
-            buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
-            buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
-        }
+        SwingUtilities.invokeLater(()->{
+            for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
+                int row = i / dataSource.columnNumber();
+                int column = i % dataSource.columnNumber();
+                buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
+                buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
+            }
+        });
+
     }
 
     @Override
