@@ -2,19 +2,24 @@ package View;
 
 import Controller.RakutenLinkBlockDataSource;
 import Controller.RakutenLinkViewDelegate;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * Created by ChenLetian on 4/1/16.
  * RakutenLink的主View类
  */
 
-public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdatable{
+public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdatable {
     // 主Panel
     private JPanel rakutenLinkMainView;
     private JFrame rakutenLinkMainFrame;
@@ -37,7 +42,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     /**
      * 初始化主界面
      */
-    public void initializeRakutenLinkMainView(int rowNumber, int columnNumber){
+    public void initializeRakutenLinkMainView(int rowNumber, int columnNumber) {
         // main Panel
         rakutenLinkMainView = new JPanel();
         rakutenLinkMainView.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -45,7 +50,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
         // center Panel
         pathPanel = new JPanel();
-        pathPanel.setLayout(new BorderLayout(0,0));
+        pathPanel.setLayout(new BorderLayout(0, 0));
 
         JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rowNumber, columnNumber));
@@ -56,7 +61,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
 
         buttons = new RakutenLinkBlock[dataSource.rowNumber()][dataSource.columnNumber()];
-        for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
+        for (int i = 0; i < dataSource.columnNumber() * dataSource.rowNumber(); i++) {
             int row = i / dataSource.columnNumber();
             int column = i % dataSource.columnNumber();
             buttons[row][column] = new RakutenLinkBlock(row, column);
@@ -67,13 +72,13 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             });
         }
         for (RakutenLinkBlock[] buttonRow : buttons)
-            for (RakutenLinkBlock button: buttonRow)
+            for (RakutenLinkBlock button : buttonRow)
                 gridPanel.add(button);
 
         // south panel
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,30,10));
-        rakutenLinkMainView.add(buttonPanel,BorderLayout.SOUTH);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        rakutenLinkMainView.add(buttonPanel, BorderLayout.SOUTH);
 
         JButton buttonNew = new JButton("New Game");
         buttonShuffle = new JButton("Shuffle");
@@ -87,6 +92,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         });
         buttonShuffle.addActionListener(e -> {
             delegate.requestShuffle();
+            playSound("shuffle", false);
             this.rakutenLinkMainView.requestFocus();
         });
         buttonHint.addActionListener(e -> {
@@ -100,39 +106,40 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
                     g.dispose();
                 }
             });
+            playSound("hint", false);
             this.rakutenLinkMainView.requestFocus();
         });
-        rakutenLinkMainView.addMouseListener(new MouseAdapter(){
+        rakutenLinkMainView.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                ((JPanel)e.getSource()).requestFocus();
+                ((JPanel) e.getSource()).requestFocus();
                 delegate.DidSelectionCanceled();
             }
         });
 
         // north panel
-        JPanel timelinePanel= new JPanel();
+        JPanel timelinePanel = new JPanel();
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         progressBar = new JProgressBar(0, 100);
         timelinePanel.add(progressBar);
         progressBar.setValue(0);
-        timeLine=new JLabel();
+        timeLine = new JLabel();
         timeLine.setSize(100, 100);
         timeLine.setText("Time Remain: 60.0s");
         timeLine.setBackground(Color.black);
-        shuffleCountLabel=new JLabel();
+        shuffleCountLabel = new JLabel();
         shuffleCountLabel.setSize(100, 100);
         shuffleCountLabel.setText("Shuffle: 3");
         shuffleCountLabel.setBackground(Color.black);
-        hintCountLabel=new JLabel();
+        hintCountLabel = new JLabel();
         hintCountLabel.setSize(100, 100);
         hintCountLabel.setText("Hint: 3");
         hintCountLabel.setBackground(Color.black);
         timelinePanel.add(timeLine);
         timelinePanel.add(shuffleCountLabel);
         timelinePanel.add(hintCountLabel);
-        rakutenLinkMainView.add(timelinePanel,BorderLayout.NORTH);
+        rakutenLinkMainView.add(timelinePanel, BorderLayout.NORTH);
 
         rakutenLinkMainFrame = new JFrame("乐天连连看");
         rakutenLinkMainFrame.setContentPane(this.rakutenLinkMainView);
@@ -144,6 +151,9 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         this.rakutenLinkMainView.requestFocus();
 
         reload();
+
+        playSound("background", true);
+
     }
 
     @Override
@@ -151,6 +161,8 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         // 现在还没有加入消去的动画和连线
         reloadAtRowAndColumn(rowBlock1, columnBlock1);
         reloadAtRowAndColumn(rowBlock2, columnBlock2);
+
+        playSound("clear", false);
 
         Timer drawPathTimer = new Timer(0, x -> SwingUtilities.invokeLater(() -> drawPath(new int[][]{{rowBlock1, columnBlock1}, Nodes[0], Nodes[1], {rowBlock2, columnBlock2}})));
         drawPathTimer.setRepeats(false);
@@ -165,6 +177,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
     @Override
     public void didClearTwoBlocksUnsuccessful(int rowBlock1, int columnBlock1, int rowBlock2, int columnBlock2) {
+        playSound("fail", false);
         buttons[rowBlock2][columnBlock2].requestFocus();
     }
 
@@ -180,12 +193,12 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             int y2 = btn2.getY() + btn2.getHeight() / 2;
 
             g.setColor(new Color(59, 192, 241, 64));
-            ((Graphics2D)g).setStroke(new BasicStroke(btn1.getWidth()/2));
-            ((Graphics2D)g).drawLine(x1, y1, x2, y2);
+            ((Graphics2D) g).setStroke(new BasicStroke(btn1.getWidth() / 2));
+            ((Graphics2D) g).drawLine(x1, y1, x2, y2);
 
             g.setColor(new Color(59, 192, 241));
-            ((Graphics2D)g).setStroke(new BasicStroke(btn1.getWidth()/8));
-            ((Graphics2D)g).drawLine(x1, y1, x2, y2);
+            ((Graphics2D) g).setStroke(new BasicStroke(btn1.getWidth() / 8));
+            ((Graphics2D) g).drawLine(x1, y1, x2, y2);
         }
         g.dispose();
     }
@@ -193,17 +206,19 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     @Override
     public void noTimeRemaining() {
         // 通过弹出对话框的方式提醒用户时间到了
-        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame,"Time is up! Game will restart.","Info",JOptionPane.INFORMATION_MESSAGE);
+        playSound("gameover", false);
+        JOptionPane.showMessageDialog(this.rakutenLinkMainFrame, "Time is up! Game will restart.", "Info", JOptionPane.INFORMATION_MESSAGE);
         delegate.restartGame();
     }
 
     @Override
     public void didSuccess() {
         // status: 函数完成 by Archimekai
-        Object[] options = {"Exit game","Play again"};
-        int chosen = JOptionPane.showOptionDialog(this.rakutenLinkMainFrame,"You win! ","Info",JOptionPane.DEFAULT_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
-        switch (chosen){
+        playSound("win", false);
+        Object[] options = {"Exit game", "Play again"};
+        int chosen = JOptionPane.showOptionDialog(this.rakutenLinkMainFrame, "You win! ", "Info", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        switch (chosen) {
             case 0:
                 delegate.shutDown();
                 break;
@@ -217,12 +232,12 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
     @Override
     public void reload() {
-        SwingUtilities.invokeLater(()->{
-            for( int i=0; i<dataSource.columnNumber() * dataSource.rowNumber(); i++) {
+        SwingUtilities.invokeLater(() -> {
+            for (int i = 0; i < dataSource.columnNumber() * dataSource.rowNumber(); i++) {
                 int row = i / dataSource.columnNumber();
                 int column = i % dataSource.columnNumber();
                 buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
-                buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
+                buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column) != -1);
             }
         });
 
@@ -231,7 +246,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     @Override
     public void updateTime(double progress, double remainingTime) {
         SwingUtilities.invokeLater(() -> {
-            progressBar.setValue((int)(progress * 100));
+            progressBar.setValue((int) (progress * 100));
             timeLine.setText("Time Remain: " + String.format("%04.1f", remainingTime) + "s");
         });
     }
@@ -239,14 +254,14 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     @Override
     public void updateCheatStatus(int type, int value) {
         //shuffle
-        if(type==0){
+        if (type == 0) {
             SwingUtilities.invokeLater(() -> {
                 shuffleCountLabel.setText("Shuffle: " + String.valueOf(value));
                 buttonShuffle.setEnabled(value > 0);
             });
         }
         //hint
-        if(type==1){
+        if (type == 1) {
             SwingUtilities.invokeLater(() -> {
                 hintCountLabel.setText("Hint: " + String.valueOf(value));
                 buttonHint.setEnabled(value > 0);
@@ -257,13 +272,14 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     @Override
     public void askForReady() {
         while (JOptionPane.showConfirmDialog(this.rakutenLinkMainFrame, "Are you ready?", "Ready", JOptionPane.YES_NO_OPTION) == 1);
+        playSound("start", false);
         delegate.startGame();
     }
 
     private void reloadAtRowAndColumn(int row, int column) {
-        SwingUtilities.invokeLater(()->{
+        SwingUtilities.invokeLater(() -> {
             buttons[row][column].setIcon(getIconAtRowAndColumn(row, column));
-            buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column)!=-1);
+            buttons[row][column].setVisible(dataSource.typeForBlockAtRowAndColumn(row, column) != -1);
         });
     }
 
@@ -275,5 +291,22 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             Image scaledImage = image.getScaledInstance(buttons[row][column].getWidth(), buttons[row][column].getHeight(), Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
         }
+    }
+
+    // 启动音频
+    private void playSound(String soundType, boolean repeat) {
+        new Thread(() -> {
+            do {
+                try {
+                    BufferedInputStream buffer = new BufferedInputStream(new FileInputStream("resource/sounds/" + soundType + ".mp3"));
+                    Player player = new Player(buffer);
+                    player.play();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+            } while (repeat);
+        }).start();
     }
 }
