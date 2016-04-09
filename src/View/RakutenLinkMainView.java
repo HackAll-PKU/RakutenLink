@@ -152,7 +152,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         reloadAtRowAndColumn(rowBlock1, columnBlock1);
         reloadAtRowAndColumn(rowBlock2, columnBlock2);
 
-        Timer drawPathTimer = new Timer(10, x -> SwingUtilities.invokeLater(() -> drawPath(new int[][]{{rowBlock1, columnBlock1}, Nodes[0], Nodes[1], {rowBlock2, columnBlock2}})));
+        Timer drawPathTimer = new Timer(0, x -> SwingUtilities.invokeLater(() -> drawPath(new int[][]{{rowBlock1, columnBlock1}, Nodes[0], Nodes[1], {rowBlock2, columnBlock2}})));
         drawPathTimer.setRepeats(false);
         drawPathTimer.start();
 
@@ -170,7 +170,6 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
 
     private void drawPath(int[][] Nodes) {
         Graphics g = pathPanel.getGraphics();
-        //g.setColor(new Color(129, 216, 207));
 
         for (int i = 0; i < Nodes.length - 1; i++) {
             JButton btn1 = buttons[Nodes[i][0]][Nodes[i][1]];
@@ -179,18 +178,15 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
             int y1 = btn1.getY() + btn1.getHeight() / 2;
             int x2 = btn2.getX() + btn2.getWidth() / 2;
             int y2 = btn2.getY() + btn2.getHeight() / 2;
-            g.drawLine(x1, y1, x2, y2);
+
+            g.setColor(new Color(59, 192, 241, 64));
+            ((Graphics2D)g).setStroke(new BasicStroke(btn1.getWidth()/2));
+            ((Graphics2D)g).drawLine(x1, y1, x2, y2);
+
+            g.setColor(new Color(59, 192, 241));
+            ((Graphics2D)g).setStroke(new BasicStroke(btn1.getWidth()/8));
+            ((Graphics2D)g).drawLine(x1, y1, x2, y2);
         }
-        /*
-            for (int node = 0; node < Nodes.length - 1; node++) {
-            for (int i = Math.min(Nodes[node][0],Nodes[node+1][0]); i <= Math.max(Nodes[node][0],Nodes[node+1][0]); i++) {
-                for (int j = Math.min(Nodes[node][1],Nodes[node+1][1]); j <= Math.max(Nodes[node][1],Nodes[node+1][1]); j++) {
-                    JButton btn = buttons[i][j];
-                    g.fillRect(btn.getX(), btn.getY(), btn.getWidth(), btn.getHeight());
-                }
-            }
-        }
-        */
         g.dispose();
     }
 
