@@ -11,8 +11,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  * Created by ChenLetian on 4/1/16.
@@ -43,7 +41,8 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
      * 初始化主界面
      */
     public void initializeRakutenLinkMainView(int rowNumber, int columnNumber) {
-        Image img = new ImageIcon("resource/background.jpg").getImage();
+        //Image img = new ImageIcon("resource/background.jpg").getImage();
+        Image img = new ImageIcon(this.getClass().getResource("/resource/picture/background.jpg")).getImage();
         // main Panel
         rakutenLinkMainView = new JPanel() {
             @Override
@@ -299,7 +298,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
     private ImageIcon getIconAtRowAndColumn(int row, int column) {
         if (dataSource.typeForBlockAtRowAndColumn(row, column) == -1) return null;
         else {
-            ImageIcon icon = new ImageIcon("resource/" + String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)) + ".png");
+            ImageIcon icon = new ImageIcon(this.getClass().getResource("/resource/picture/" + String.valueOf(dataSource.typeForBlockAtRowAndColumn(row, column)) + ".png"));
             Image image = icon.getImage();
             Image scaledImage = image.getScaledInstance(buttons[row][column].getWidth(), buttons[row][column].getHeight(), Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
@@ -311,11 +310,9 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         new Thread(() -> {
             do {
                 try {
-                    BufferedInputStream buffer = new BufferedInputStream(new FileInputStream("resource/sounds/" + soundType + ".mp3"));
+                    BufferedInputStream buffer = new BufferedInputStream(this.getClass().getResourceAsStream("/resource/sound/" + soundType + ".mp3"));
                     Player player = new Player(buffer);
                     player.play();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                 } catch (JavaLayerException e) {
                     e.printStackTrace();
                 }
