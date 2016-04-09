@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RakutenLink:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RakutenLink_jar</output-path>
+    <root id="archive" name="RakutenLink.jar">
+      <element id="module-output" name="RakutenLink" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/jl1.0.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
