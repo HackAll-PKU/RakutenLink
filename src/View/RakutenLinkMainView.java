@@ -43,18 +43,29 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
      * 初始化主界面
      */
     public void initializeRakutenLinkMainView(int rowNumber, int columnNumber) {
+        Image img = new ImageIcon("resource/background.jpg").getImage();
         // main Panel
-        rakutenLinkMainView = new JPanel();
+        rakutenLinkMainView = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (img != null) g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+            }
+        };
         rakutenLinkMainView.setBorder(new EmptyBorder(0, 0, 0, 0));
         rakutenLinkMainView.setLayout(new BorderLayout(0, 0));
+        rakutenLinkMainView.setOpaque(false);
+
+
 
         // center Panel
         pathPanel = new JPanel();
         pathPanel.setLayout(new BorderLayout(0, 0));
+        pathPanel.setOpaque(false);
 
         JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rowNumber, columnNumber));
-        //gridPanel.setOpaque(false);
+        gridPanel.setOpaque(false);
         pathPanel.add(gridPanel, BorderLayout.CENTER);
         //rakutenLinkMainView.add(gridPanel, BorderLayout.CENTER);
         rakutenLinkMainView.add(pathPanel, BorderLayout.CENTER);
@@ -78,6 +89,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         // south panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        buttonPanel.setOpaque(false);
         rakutenLinkMainView.add(buttonPanel, BorderLayout.SOUTH);
 
         JButton buttonNew = new JButton("New Game");
@@ -121,6 +133,7 @@ public class RakutenLinkMainView extends AbstractViewPanel implements ViewUpdata
         // north panel
         JPanel timelinePanel = new JPanel();
         timelinePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        timelinePanel.setOpaque(false);
         progressBar = new JProgressBar(0, 100);
         timelinePanel.add(progressBar);
         progressBar.setValue(0);
