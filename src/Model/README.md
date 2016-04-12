@@ -1,2 +1,4 @@
 # Model的解释
-请把Model你觉得需要的解释写在这里
+- RakutenLinkModel是游戏主Model类
+- RakutenLinkTimer控制游戏时间的类
+- 二者均继承自AbstractModel
